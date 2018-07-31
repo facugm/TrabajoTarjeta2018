@@ -1,3 +1,5 @@
+Facundo García Mata & Mauro Tebay
+
 [![Build Status](https://travis-ci.org/facugm/TrabajoTarjeta2018.svg?branch=master)](https://travis-ci.org/facugm/TrabajoTarjeta2018)
 
 # Trabajo Tarjeta: Versión 2018
