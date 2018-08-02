@@ -10,6 +10,7 @@ class Tarjeta implements TarjetaInterface {
       // Esto comprueba si la carga esta dentro de los montos permitidos
       $cargavalida = in_array($monto, $this->cargas);
 
+      //Comprueba si la carga va a obtener un adicional y se lo suma
       if($monto==510.15){
         $monto += 81.93;
       }
