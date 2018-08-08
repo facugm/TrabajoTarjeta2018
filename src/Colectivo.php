@@ -27,8 +27,8 @@ class Colectivo implements ColectivoInterface {
 
     //Por ahora solo devuelve el boleto si el saldo es suficiente
     public function pagarCon(TarjetaInterface $tarjeta){
-        if($tarjeta->saldo >= 14.80){
-            return $boleto;
+        if($tarjeta->obtenerSaldo() >= 14.80){
+            return $boleto = new Boleto(14.80,$this,$tarjeta);
         }
 
         else{

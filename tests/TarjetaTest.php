@@ -13,8 +13,10 @@ class TarjetaTest extends TestCase {
         $tarjeta = new Tarjeta;
         $tarjeta1 = new Tarjeta;
         $tarjeta2 = new Tarjeta;
-
-
+        $tarjeta3 = new Tarjeta;
+        $tarjeta4 = new Tarjeta;
+        $tarjeta5 = new Tarjeta; 
+        
         $this->assertTrue($tarjeta->recargar(10));
         $this->assertEquals($tarjeta->obtenerSaldo(), 10);
         
@@ -26,6 +28,15 @@ class TarjetaTest extends TestCase {
         
         $this->assertTrue($tarjeta2->recargar(962.59));
         $this->assertEquals($tarjeta2->obtenerSaldo(), 1184.17);
+        
+        $this->assertTrue($tarjeta3->recargar(30));
+        $this->assertEquals($tarjeta3->obtenerSaldo(), 30);
+
+        $this->assertTrue($tarjeta4->recargar(50));
+        $this->assertEquals($tarjeta4->obtenerSaldo(), 50);
+        
+        $this->assertTrue($tarjeta5->recargar(100));
+        $this->assertEquals($tarjeta5->obtenerSaldo(), 100);        
     }
 
     /**
