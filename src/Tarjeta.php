@@ -5,6 +5,7 @@ namespace TrabajoTarjeta;
 class Tarjeta implements TarjetaInterface {
     protected $saldo;
     protected $cargas = array("10", "20", "30", "50", "100", "510.15", "962.59");
+    protected $plus = 0;
 
     public function recargar($monto) {
       // Esto comprueba si la carga esta dentro de los montos permitidos
@@ -19,9 +20,17 @@ class Tarjeta implements TarjetaInterface {
       }
 
       if ($cargavalida) {
+        if ($plus > 0 ) {
+          $monto -= ($plus * 14.8);
+        }
         $this->saldo += $monto;
       }
+    
       return $cargavalida;
+    }
+
+    public function tienePlus(){
+      return $plus;
     }
 
     /**
