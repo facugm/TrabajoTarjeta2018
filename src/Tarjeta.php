@@ -19,9 +19,11 @@ class Tarjeta implements TarjetaInterface {
         $monto += 221.58;
       }
 
+      
       if ($cargavalida) {
         if ($plus > 0 ) {
-          $monto -= ($plus * 14.8);
+          $monto -= ($plus * 14.8);    //si la carga es valida, le descuenta al monto a cargar la cantidad de viajes plus usados
+          $plus = 0;                   //aqui se resetea la cantidad de viajes plus, para que pueda seguir usandolos
         }
         $this->saldo += $monto;
       }
@@ -29,8 +31,14 @@ class Tarjeta implements TarjetaInterface {
       return $cargavalida;
     }
 
+    //esta funcion devuelve la cantidad de viajes plus que uso la tarjeta
     public function tienePlus(){
       return $plus;
+    }
+
+    //Suma 1 a la cantidad de viajes plus hechos
+    public function viajePlus() {
+      $plus += 1;
     }
 
     /**

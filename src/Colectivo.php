@@ -31,10 +31,18 @@ class Colectivo implements ColectivoInterface {
             return $boleto = new Boleto(14.80,$this,$tarjeta);
         }
         else{
+            //aca se verifica si a la tarjeta le quedan viajes plus y cuantos
+            //dependiendo de la cantidad de plus restantes retorna un boleto diferente
             if($tarjeta->tienePlus() == 0) {
-                return $boleto = new Boleto("Viaje Plus",$this,$tarjeta);}
+                return $boleto = new Boleto("Viaje Plus",$this,$tarjeta);
+                $tarjeta->viajePlus();
+            }
+
             if($tarjeta->tienePlus() == 1) {
-                    return $boleto = new Boleto("Ultimo Plus",$this,$tarjeta);}
+                return $boleto = new Boleto("Ultimo Plus",$this,$tarjeta);
+                $tarjeta->viajePlus();
+            }
+
             return FALSE;
         }
     }
