@@ -22,4 +22,7 @@ interface TarjetaInterface {
      */
     public function obtenerSaldo();
 
+    public function tienePlus();
+
+    public function viajePlus();
 }
