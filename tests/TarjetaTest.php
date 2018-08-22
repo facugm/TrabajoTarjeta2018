@@ -48,4 +48,23 @@ class TarjetaTest extends TestCase {
       $this->assertFalse($tarjeta->recargar(15));
       $this->assertEquals($tarjeta->obtenerSaldo(), 0);
   }
+
+    public function testCargaPlus(){
+        $tarjeta1 = new Tarjeta;
+        $tarjeta2 = new Tarjeta;
+        $colectivo = new Colectivo;
+
+        //aqui comprobamos que se descuente adecuadamente la cantidad de plus del monto a recargar
+        //tarjeta1 tendra 1 viaje plus usado
+        $tarjeta1->recargar(10);
+        $colectivo->pagarCon($tarjeta1);
+        $this->assertEquals($tarjeta1->recargar(20), 5.20);
+
+        //tarjeta2 tiene los 2 viajes plus usados
+        $tarjeta2->recargar(10);
+        $colectivo->pagarCon($tarjeta2);
+        $colectivo->pagarCon($tarjeta2);
+        $this->assertEquals($tarjeta2->recargar(30), 0.40);
+
+    }
 }
