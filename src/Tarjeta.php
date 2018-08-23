@@ -6,6 +6,7 @@ class Tarjeta implements TarjetaInterface {
     protected $saldo;
     protected $cargas = array("10", "20", "30", "50", "100", "510.15", "962.59");
     protected $plus = 0;
+    protected $pasaje = 14.80;
 
     public function recargar($monto) {
       // Esto comprueba si la carga esta dentro de los montos permitidos
@@ -41,6 +42,11 @@ class Tarjeta implements TarjetaInterface {
       return $cargavalida;
     }
 
+    //devuelve el valor de un pasaje
+    public function valorPasaje(){
+      return $this->$pasaje;
+    }
+
     //esta funcion devuelve la cantidad de viajes plus que uso la tarjeta
     public function tienePlus(){
       return $this->plus;
@@ -59,4 +65,12 @@ class Tarjeta implements TarjetaInterface {
     public function obtenerSaldo() {
       return $this->saldo;
     }
+}
+
+class Medio extends Tarjeta{
+
+}
+
+class Completo extends Tarjeta{
+
 }
