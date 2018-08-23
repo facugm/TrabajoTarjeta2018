@@ -53,5 +53,4 @@ class Colectivo implements ColectivoInterface {
             return FALSE;
         }
     }
-
 }

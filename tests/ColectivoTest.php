@@ -47,8 +47,6 @@ class ColectivoTest extends TestCase {
         $compl = new Completo;
 
         $this->assertEquals($boletocomp,$colectivo->pagarCon($compl));
-
-
     }
 
 }

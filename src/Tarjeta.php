@@ -19,7 +19,6 @@ class Tarjeta implements TarjetaInterface {
       elseif($monto==962.59){
         $monto += 221.58;
       }
-
       
       if ($cargavalida and $this->plus == 0) {   //si la carga es válida y no debe ningún plus
         $this->saldo += $monto;                 //carga el monto elegido
