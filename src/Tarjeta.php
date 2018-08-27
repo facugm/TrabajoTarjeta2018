@@ -6,6 +6,7 @@ class Tarjeta implements TarjetaInterface {
     protected $saldo;
     protected $cargas = array("10", "20", "30", "50", "100", "510.15", "962.59");
     protected $plus = 0;
+    protected $pasaje = 14.80;
 
     public function recargar($monto) {
       // Esto comprueba si la carga esta dentro de los montos permitidos
