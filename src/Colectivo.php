@@ -28,11 +28,11 @@ class Colectivo implements ColectivoInterface {
     //Por ahora solo devuelve el boleto si el saldo es suficiente
     public function pagarCon(TarjetaInterface $tarjeta){
 
-        if($tarjeta instanceof Completo) return $boleto = new Boleto(0.0,$this,$tarjeta);
+        if($tarjeta instanceof Completo) return $boleto = new Boleto($tarjeta->valorPasaje(),$this,$tarjeta);
 
         if($tarjeta->obtenerSaldo() >= $tarjeta->valorPasaje()){
 
-            if($tarjeta instanceof Medio) return $boleto = new Boleto(($tarjeta->valorPasaje()/2.0),$this,$tarjeta);
+            if($tarjeta instanceof Medio) return $boleto = new Boleto($tarjeta->valorPasaje(),$this,$tarjeta);
 
             return $boleto = new Boleto($tarjeta->valorPasaje(),$this,$tarjeta);
         }

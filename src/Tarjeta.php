@@ -43,7 +43,7 @@ class Tarjeta implements TarjetaInterface {
 
     //devuelve el valor de un pasaje
     public function valorPasaje(){
-      return $this->$pasaje;
+      return $this->pasaje;
     }
 
     //esta funcion devuelve la cantidad de viajes plus que uso la tarjeta
@@ -68,8 +68,14 @@ class Tarjeta implements TarjetaInterface {
 
 class Medio extends Tarjeta{
 
+  public function valorPasaje(){
+    return ($this->pasaje)/2.0;
+  }
+
 }
 
 class Completo extends Tarjeta{
+
+  protected $pasaje = 0.0;
 
 }
