@@ -39,4 +39,17 @@ class ColectivoTest extends TestCase {
 
     }
 
+    public function testFranquicias(){
+        $colectivo = new Colectivo;
+        $tarjeta = new Tarjeta;
+        $compl = new Completo;
+        $medio = new Medio;
+        $boletocomp = new Boleto(0, $colectivo, $compl);
+        $boletomedio = new Boleto(7.4, $colectivo, $medio);
+
+        $medio->recargar(10);
+        $this->assertEquals($boletocomp, $colectivo->pagarCon($compl));
+        $this->assertEquals($boletomedio, $colectivo->pagarCon($medio));
+    }
+
 }
