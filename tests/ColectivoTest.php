@@ -14,6 +14,7 @@ class ColectivoTest extends TestCase {
         $colectivo->pagarCon($tarjeta);         //hacemos los dos viajes plus para que
         $colectivo->pagarCon($tarjeta);         //se quede sin viajes y testeamos
         
+        $this->assertEquals($tarjeta->obtenerSaldo(),10);
         $this->assertFalse($colectivo->pagarCon($tarjeta));
     }
 
@@ -25,6 +26,7 @@ class ColectivoTest extends TestCase {
         
         //testeamos si al pagar con la tarjeta con saldo suficiente se emite un boleto correcto
         $this->assertEquals($colectivo->pagarCon($tarjeta),$boleto);
+        $this->assertEquals($tarjeta->obtenerSaldo(),5.2);
     }
 
     public function testViajesPlus() {
@@ -50,6 +52,7 @@ class ColectivoTest extends TestCase {
         $medio->recargar(10);
         $this->assertEquals($boletocomp, $colectivo->pagarCon($compl));
         $this->assertEquals($boletomedio, $colectivo->pagarCon($medio));
+        $this->assertEquals($medio->obtenerSaldo(),2.6);
     }
 
 }
