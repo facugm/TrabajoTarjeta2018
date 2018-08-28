@@ -63,10 +63,15 @@ class Tarjeta implements TarjetaInterface {
     public function obtenerSaldo() {
       return $this->saldo;
     }
+    
+  public function descontarSaldo(){
+    $this->saldo -= $this->valorPasaje(); 
+  }
 }
 
 class Medio extends Tarjeta{
 
+  //redefinimos el valor del pasaje de la clase
   public function valorPasaje(){
     return ($this->pasaje)/2.0;
   }
@@ -75,6 +80,7 @@ class Medio extends Tarjeta{
 
 class Completo extends Tarjeta{
 
+  //redefinimos el valor del pasaje de la clase
   protected $pasaje = 0.0;
 
 }
