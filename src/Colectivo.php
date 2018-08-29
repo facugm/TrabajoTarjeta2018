@@ -36,16 +36,21 @@ class Colectivo implements ColectivoInterface {
         }
         
         else{
+
             //aca se verifica si a la tarjeta le quedan viajes plus y cuantos
             //dependiendo de la cantidad de plus restantes retorna un boleto diferente
             if($tarjeta->tienePlus() == 0) {
+
                 $tarjeta->viajePlus();      //si la tarjeta utilizo algun plus, se lo acredita y emite un boleto acorde al mismo
                 return $boleto = new Boleto("Viaje Plus",$this,$tarjeta);
+
             }
 
             if($tarjeta->tienePlus() == 1) {
+
                 $tarjeta->viajePlus();      //si la tarjeta ya tenía un plus, se lo acredita y emite un boleto indicando que es el ultimo que puede utilizar
                 return $boleto = new Boleto("Ultimo Plus",$this,$tarjeta);
+
             }
             
             //si la tarjeta no tiene saldo y tampoco le quedan viajes plus, devuelve FALSE

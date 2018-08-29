@@ -16,6 +16,7 @@ class Tarjeta implements TarjetaInterface {
       if($monto==510.15){
         $monto += 81.93;
       }
+      
       elseif($monto==962.59){
         $monto += 221.58;
       }
@@ -28,12 +29,15 @@ class Tarjeta implements TarjetaInterface {
       elseif($cargavalida and $this->plus > 0){ //si la carga es válida y debe algún plus
 
         if($monto >=($this->plus * 14.8)){     //si el monto a cargar es mayor o igual a los viajes que debe (en pesos)
+          
           $monto -= ($this->plus * 14.8);       //resta del monto a cargar los plus que debe
           $this->plus=0;                        //los plus vuelven a 0
         }
 
         else{                   //si llega a este caso significa que la carga no es suficiente para pagar los plus
+          
           return FALSE;         //cargaválida = falso
+        
         }
 
       }
@@ -45,6 +49,7 @@ class Tarjeta implements TarjetaInterface {
     public function valorPasaje(){
       return $this->pasaje;
     }
+    
     //esta funcion devuelve la cantidad de viajes plus que uso la tarjeta
     public function tienePlus(){
       return $this->plus;
@@ -64,7 +69,7 @@ class Tarjeta implements TarjetaInterface {
       return $this->saldo;
     }
     
-  public function descontarSaldo(){
-    $this->saldo -= $this->valorPasaje(); 
+    public function descontarSaldo(){
+      $this->saldo -= $this->valorPasaje(); 
   }
 }
