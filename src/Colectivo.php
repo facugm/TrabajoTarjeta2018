@@ -28,17 +28,13 @@ class Colectivo implements ColectivoInterface {
     //Por ahora solo devuelve el boleto si el saldo es suficiente
     public function pagarCon(TarjetaInterface $tarjeta){
 
-        if($tarjeta instanceof Completo) return $boleto = new Boleto($tarjeta->valorPasaje(),$this,$tarjeta);
-
         if($tarjeta->obtenerSaldo() >= $tarjeta->valorPasaje()){
 
-            if($tarjeta instanceof Medio){
-                $tarjeta->descontarSaldo();                
-                return $boleto = new Boleto($tarjeta->valorPasaje(),$this,$tarjeta);
-            }
             $tarjeta->descontarSaldo();
             return $boleto = new Boleto($tarjeta->valorPasaje(),$this,$tarjeta);
+        
         }
+        
         else{
             //aca se verifica si a la tarjeta le quedan viajes plus y cuantos
             //dependiendo de la cantidad de plus restantes retorna un boleto diferente
