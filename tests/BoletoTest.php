@@ -25,6 +25,8 @@ class BoletoTest extends TestCase {
         $empresa = "Semtur";
         $numero = 420;
 
+	$tiempo = new Tiempo;
+
 	$tarjeta = new Tarjeta(4269, $tiempo);
 
         $colectivo = new Colectivo($linea, $empresa, $numero);
