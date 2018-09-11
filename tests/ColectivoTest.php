@@ -26,13 +26,13 @@ class ColectivoTest extends TestCase {
 	
 	$tiempo = new Tiempo;
         $tarjeta = new Tarjeta("4269", $tiempo);
-        $boleto = new Boleto(14.80, $colectivo, $tarjeta);
+        $boleto = new Boleto(16.80, $colectivo, $tarjeta);
         
         $tarjeta->recargar(20);
         
         //testeamos si al pagar con la tarjeta con saldo suficiente se emite un boleto correcto
         $this->assertEquals($colectivo->pagarCon($tarjeta),$boleto);
-        $this->assertEquals($tarjeta->obtenerSaldo(),5.2);
+        $this->assertEquals($tarjeta->obtenerSaldo(),3.2);
     }
 
     public function testViajesPlus() {
@@ -58,13 +58,13 @@ class ColectivoTest extends TestCase {
         $compl = new Completo("420", $tiempo);
         $medio = new Medio("12345", $tiempo);
         $boletocomp = new Boleto(0, $colectivo, $compl);
-        $boletomedio = new Boleto(7.4, $colectivo, $medio);
+        $boletomedio = new Boleto(8.4, $colectivo, $medio);
 
         $medio->recargar(10);
         
         $this->assertEquals($boletocomp, $colectivo->pagarCon($compl));
         $this->assertEquals($boletomedio, $colectivo->pagarCon($medio));
-        $this->assertEquals($medio->obtenerSaldo(),2.6);
+        $this->assertEquals($medio->obtenerSaldo(),1.6);
     }
 
 }
