@@ -64,7 +64,7 @@ class Tarjeta implements TarjetaInterface {
     
     public function descontarSaldo(){
 
-      if($this->saldo >= $this->$pasaje){         //se verifica si tiene saldo
+      if($this->saldo >= $this->valorPasaje()){         //se verifica si tiene saldo
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus
           $this->saldo -= $this->valorPasaje();   //si no debe ninguno, se descuenta normalmente el saldo
           $this->total = $this->valorPasaje();
