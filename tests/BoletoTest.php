@@ -25,9 +25,11 @@ class BoletoTest extends TestCase {
         $empresa = "Semtur";
         $numero = 420;
 
+	$tarjeta = new Tarjeta(4269, $tiempo);
+
         $colectivo = new Colectivo($linea, $empresa, $numero);
 
-        $boleto = new Boleto(NULL, $colectivo, NULL);
+        $boleto = new Boleto(NULL, $colectivo, $tarjeta);
 
         $this->assertEquals($boleto->obtenerColectivo(), $colectivo);
 
