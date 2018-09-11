@@ -4,6 +4,6 @@ namespace TrabajoTarjeta;
 
 interface TiempoInterface{
 
-    public function tieme();
+    public function time();
 
 }
