@@ -35,7 +35,6 @@ class Boleto implements BoletoInterface {
 
         $this->id = $tarjeta->obtenerId();
 
-        $this->abonoPlus = $tarjeta->abonoPlus();
 
 
     }
