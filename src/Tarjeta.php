@@ -66,16 +66,16 @@ class Tarjeta implements TarjetaInterface {
 
       if($this->saldo >= $this->$pasaje){         //se verifica si tiene saldo
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus
-          $this->saldo -= $this->pasaje;   //si no debe ninguno, se descuenta normalmente el saldo
-          $this->total = $this->pasaje;
+          $this->saldo -= $this->valorPasaje();   //si no debe ninguno, se descuenta normalmente el saldo
+          $this->total = $this->valorPasaje();
           $this->horaPago = $this->tiempo->time();
           return "PagoNormal";
         }
 
         elseif($this->plus == 1) {                //si debe uno se descuenta el valor del boleto + 16.8 (el valor del plus que debe)
-          if($this->saldo >= $this->pasaje + 16.8){
-            $this->saldo -= $this->pasaje + 16.8;
-            $this->total = $this->pasaje + 16.8;
+          if($this->saldo >= $this->valorPasaje() + 16.8){
+            $this->saldo -= $this->valorPasaje() + 16.8;
+            $this->total = $this->valorPasaje() + 16.8;
             $this->plus = 0;
             $this->horaPago = $this->tiempo->time();
             return "PagoNormal";
@@ -87,9 +87,9 @@ class Tarjeta implements TarjetaInterface {
 
         }
         elseif($this->plus == 2) {                //si debe dos se descuenta el valor del boleto + 16.8 * 2 (el valor de los plus que debe)
-          if($this->saldo >= $this->pasaje + 16.8 * 2){
-            $this->saldo -= $this->pasaje + 16.8 * 2;
-            $this->total = $this->pasaje + 16.8 * 2;
+          if($this->saldo >= $this->valorPasaje() + 16.8 * 2){
+            $this->saldo -= $this->valorPasaje() + 16.8 * 2;
+            $this->total = $this->valorPasaje() + 16.8 * 2;
             $this->plus = 0;
             $this->horaPago = $this->tiempo->time();
             return "PagoNormal";
