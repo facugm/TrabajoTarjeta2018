@@ -8,7 +8,9 @@ class ColectivoTest extends TestCase {
 
     public function testPagarSaldoInsuf() {
         $colectivo = new Colectivo;
-        $tarjeta = new Tarjeta;
+
+	$tiempo = new Tiempo;
+        $tarjeta = new Tarjeta("4269", $tiempo );
         
         $tarjeta->recargar(10);
         
@@ -20,8 +22,10 @@ class ColectivoTest extends TestCase {
     }
 
     public function testPagarSaldoSuf(){
-        $colectivo = new Colectivo;
-        $tarjeta = new Tarjeta;
+        $colectivo = new Colectivo("102", NULL, NULL) ;
+	
+	$tiempo = new Tiempo;
+        $tarjeta = new Tarjeta("4269", $tiempo);
         $boleto = new Boleto(14.80, $colectivo, $tarjeta);
         
         $tarjeta->recargar(20);
@@ -32,8 +36,10 @@ class ColectivoTest extends TestCase {
     }
 
     public function testViajesPlus() {
-        $colectivo = new Colectivo;
-        $tarjeta = new Tarjeta;
+        $colectivo = new Colectivo("102", NULL, NULL);
+
+	$timepo = new Tiempo;
+        $tarjeta = new Tarjeta("4269", $tiempo);
         $plus1 = new Boleto("Viaje Plus", $colectivo, $tarjeta);    //primero creamos dos boletos, uno siendo un plus normal o primer plus
         $plus2 = new Boleto("Ultimo Plus", $colectivo, $tarjeta);   //y el otro es correspondiente a un segundo o ultimo plus
         
@@ -45,10 +51,12 @@ class ColectivoTest extends TestCase {
     }
 
     public function testFranquicias(){
-        $colectivo = new Colectivo;
-        $tarjeta = new Tarjeta;
-        $compl = new Completo;
-        $medio = new Medio;
+        $colectivo = new Colectivo("102", NULL, NULL);
+
+	$tiempo = new Tiempo;
+        $tarjeta = new Tarjeta("4269", $tiempo);
+        $compl = new Completo("420", $tiempo);
+        $medio = new Medio("12345", $tiempo);
         $boletocomp = new Boleto(0, $colectivo, $compl);
         $boletomedio = new Boleto(7.4, $colectivo, $medio);
 
