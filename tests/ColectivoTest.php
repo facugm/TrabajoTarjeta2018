@@ -38,7 +38,7 @@ class ColectivoTest extends TestCase {
     public function testViajesPlus() {
         $colectivo = new Colectivo("102", NULL, NULL);
 
-	$timepo = new Tiempo;
+	$tiempo = new Tiempo;
         $tarjeta = new Tarjeta("4269", $tiempo);
         $plus1 = new Boleto("Viaje Plus", $colectivo, $tarjeta);    //primero creamos dos boletos, uno siendo un plus normal o primer plus
         $plus2 = new Boleto("Ultimo Plus", $colectivo, $tarjeta);   //y el otro es correspondiente a un segundo o ultimo plus
