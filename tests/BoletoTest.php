@@ -9,7 +9,11 @@ class BoletoTest extends TestCase {
     public function testSaldoCero() {
         $valor = 14.80;
 
-        $boleto = new Boleto($valor, NULL, NULL);
+	$colectivo = new Colectivo("102", "Semtur", "420");
+
+	$tarjeta = new Tarjeta(4269);
+
+        $boleto = new Boleto($valor, $colectivo, $tarjeta);
 
         $this->assertEquals($boleto->obtenerValor(), $valor);
     }
