@@ -64,4 +64,12 @@ class ColectivoTest extends TestCase {
         $this->assertEquals($medio->obtenerSaldo(),1.6);
     }
 
+    public function testDatosColectivo(){
+        $colectivo = new Colectivo(102, "Semtur", 2);
+
+        $this->assertEquals($colectivo->linea(), 102);
+        $this->assertEquals($colectivo->empresa(), "Semtur");
+        $this->assertEquals($colectivo->numero(), 2);
+    }
+
 }
