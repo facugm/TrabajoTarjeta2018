@@ -14,6 +14,7 @@ class Boleto implements BoletoInterface {
     protected $saldo;
     protected $id;
     protected $tipoBoleto;
+    protected $descripcion;
 
     public function __construct($colectivo, $tarjeta, $tipoBoleto) {
 
@@ -37,7 +38,7 @@ class Boleto implements BoletoInterface {
 
         $this->id = $tarjeta->obtenerId();
 
-
+        $this->descripcion = $this->obtenerDescripcion();
 
     }
 
@@ -57,6 +58,13 @@ class Boleto implements BoletoInterface {
      */
     public function obtenerColectivo() {
         return $this->colectivo;
+    }
+
+    public function obtenerDescripcion(){
+        $base = "Abona Viajes Plus ";
+        $extraPlus = $this->total - $this->valor;
+        $final = $base . $extraPlus . " y";
+        return $final;
     }
 
 }

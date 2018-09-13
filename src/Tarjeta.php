@@ -4,7 +4,7 @@ namespace TrabajoTarjeta;
 
 class Tarjeta implements TarjetaInterface {
     protected $valorBoleto = 16.8;
-    protected $saldo = 0;
+    protected $saldo;
     protected $cargas = array("10", "20", "30", "50", "100", "510.15", "962.59");
     protected $plus = 0;
     protected $pasaje = 16.8;
@@ -80,7 +80,10 @@ class Tarjeta implements TarjetaInterface {
           }  
 
           else{                       //si no puede pagar el valor del boleto + el del plus que debe, no puede abonar el pasaje
-            return FALSE;
+            $this->viajePlus();
+            $this->total = 0.0;
+            $this->horaPago = $this->tiempo->time();
+            return "Plus2";
           }
 
         }

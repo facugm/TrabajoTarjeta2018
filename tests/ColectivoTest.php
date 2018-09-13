@@ -56,12 +56,16 @@ class ColectivoTest extends TestCase {
         $tarjeta = new Tarjeta(1, $tiempo);
         $compl = new Completo(0, $tiempo);
         $medio = new Medio(2, $tiempo);
+        $medioUni = new MedioUniversitario(3, $tiempo);
         
         $medio->recargar(10);
+        $medioUni->recargar(10);
         
         $this->assertEquals($colectivo->pagarCon($compl), new Boleto($colectivo, $compl, "Normal"));
         $this->assertEquals($colectivo->pagarCon($medio), new Boleto($colectivo, $medio, "Normal"));
+        $this->assertEquals($colectivo->pagarCon($medioUni), new Boleto($colectivo, $medioUni, "Normal"));
         $this->assertEquals($medio->obtenerSaldo(),1.6);
+        $this->assertEquals($medioUni->obtenerSaldo(),1.6);
     }
 
     public function testDatosColectivo(){
@@ -70,6 +74,62 @@ class ColectivoTest extends TestCase {
         $this->assertEquals($colectivo->linea(), 102);
         $this->assertEquals($colectivo->empresa(), "Semtur");
         $this->assertEquals($colectivo->numero(), 2);
+    }
+
+    public function testDebePlusNormal(){
+        $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo);
+        $colectivo = new Colectivo(102, "Semtur", 40);
+
+        $tarjeta->recargar(10);  
+        $colectivo->pagarCon($tarjeta);  //usamos un viaje plus
+
+
+        $tarjeta->recargar(30); //comprobamos que se abona un viaje plus que debia y que la descripcion coincide
+        $this->assertEquals($colectivo->pagarCon($tarjeta), $abono1 = new Boleto($colectivo, $tarjeta, "Normal"));
+        $this->assertEquals($abono1->obtenerDescripcion(), "Abona Viajes Plus 16.8 y");
+        $this->assertEquals($tarjeta->obtenerSaldo(), 6.4);
+
+
+        $colectivo->pagarCon($tarjeta); //pagamos dos veces utilizando los viajes plus
+        $colectivo->pagarCon($tarjeta);
+
+        $this->assertFalse($colectivo->pagarCon($tarjeta)); //comprobamos que con el mismo saldo no podemos viajar
+
+        $tarjeta->recargar(30);
+        $this->assertFalse($colectivo->pagarCon($tarjeta)); //y con saldo insuficiente tampoco podemos
+
+        $tarjeta->recargar(20); //solo cuando carguemos el valor de nuestro boleto + los plus que debamos, se emitira un boleto
+        $this->assertEquals($colectivo->pagarCon($tarjeta), $abono2 = new Boleto($colectivo, $tarjeta, "Normal"));
+        $this->assertEquals($abono2->obtenerDescripcion(), "Abona Viajes Plus 33.6 y");
+        $this->assertEquals($tarjeta->obtenerSaldo(), 6.0 );
+
+    }
+
+    public function testDebePlusMedio(){
+        $tiempo = new Tiempo;
+        $medio = new Medio(1, $tiempo);
+        $colectivo = new Colectivo(102, "Semtur", 40);
+
+        $medio->recargar(10);
+        $colectivo->pagarCon($medio); //boleto normal
+        $colectivo->pagarCon($medio); //viaje plus 1
+
+        $medio->recargar(30);  //cargamos suficiente para pagar el plus y abonamos el plus que debiamos y el medio boleto normal
+        $this->assertEquals($colectivo->pagarCon($medio), $abono1 = new Boleto($colectivo, $medio, "Normal"));
+        $this->assertEquals($abono1->obtenerDescripcion(), "Abona Viajes Plus 16.8 y");
+        $this->assertEquals($medio->obtenerSaldo(), 6.4 );
+
+        $colectivo->pagarCon($medio);
+        $colectivo->pagarCon($medio); //usamos los 2 plus
+
+        $this->assertFalse($colectivo->pagarCon($medio)); //ahora no podremos pagar
+
+        $medio->recargar(50);
+        $this->assertEquals($colectivo->pagarCon($medio), $abono2 = new Boleto($colectivo, $medio, "Normal"));
+        $this->assertEquals($abono2->obtenerDescripcion(), "Abona Viajes Plus 33.6 y");
+        $this->assertEquals($medio->obtenerSaldo(), 14.4 );
+
     }
 
 }
