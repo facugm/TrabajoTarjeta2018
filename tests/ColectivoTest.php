@@ -7,10 +7,10 @@ use PHPUnit\Framework\TestCase;
 class ColectivoTest extends TestCase {
 
     public function testPagarSaldoInsuf() {
-        $colectivo = new Colectivo;
+        $colectivo = new Colectivo(102, "Semtur", 420);
 
-	$tiempo = new Tiempo;
-        $tarjeta = new Tarjeta("4269", $tiempo );
+	    $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo );
         
         $tarjeta->recargar(10);
         
@@ -22,48 +22,45 @@ class ColectivoTest extends TestCase {
     }
 
     public function testPagarSaldoSuf(){
-        $colectivo = new Colectivo("102", NULL, NULL) ;
+        $colectivo = new Colectivo("102", "Semtur", "420") ;
 	
-	$tiempo = new Tiempo;
-        $tarjeta = new Tarjeta("4269", $tiempo);
-        $boleto = new Boleto(16.80, $colectivo, $tarjeta);
-        
+	    $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo);
+
         $tarjeta->recargar(20);
         
         //testeamos si al pagar con la tarjeta con saldo suficiente se emite un boleto correcto
-        $this->assertEquals($colectivo->pagarCon($tarjeta),$boleto);
+        $this->assertEquals($colectivo->pagarCon($tarjeta), new Boleto($colectivo, $tarjeta, "Normal"));
         $this->assertEquals($tarjeta->obtenerSaldo(),3.2);
     }
 
     public function testViajesPlus() {
         $colectivo = new Colectivo("102", NULL, NULL);
 
-	$tiempo = new Tiempo;
-        $tarjeta = new Tarjeta("4269", $tiempo);
-        $plus1 = new Boleto("Viaje Plus", $colectivo, $tarjeta);    //primero creamos dos boletos, uno siendo un plus normal o primer plus
-        $plus2 = new Boleto("Ultimo Plus", $colectivo, $tarjeta);   //y el otro es correspondiente a un segundo o ultimo plus
+	    $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo);
+        //$plus1 = new Boleto($colectivo, $tarjeta, "Viaje Plus");    //primero creamos dos boletos, uno siendo un plus normal o primer plus
+        //$plus2 = new Boleto($colectivo, $tarjeta, "Ultimo Plus");   //y el otro es correspondiente a un segundo o ultimo plus
         
         $tarjeta->recargar(10);                 //recargamos una cantidad insuficiente de dinero en la tarjeta para que esta utilice los viajes plus
         
-        $this->assertEquals($colectivo->pagarCon($tarjeta),$plus1);     //primero testeamos si se emite correctamente el primer plus
-        $this->assertEquals($colectivo->pagarCon($tarjeta),$plus2);     //y luego si se emite correctamente el boleto del ultimo plus
+        $this->assertEquals($colectivo->pagarCon($tarjeta),new Boleto($colectivo, $tarjeta, "Viaje Plus"));     //primero testeamos si se emite correctamente el primer plus
+        $this->assertEquals($colectivo->pagarCon($tarjeta),new Boleto($colectivo, $tarjeta, "Ultimo Plus"));     //y luego si se emite correctamente el boleto del ultimo plus
 
     }
 
     public function testFranquicias(){
         $colectivo = new Colectivo("102", NULL, NULL);
 
-	$tiempo = new Tiempo;
-        $tarjeta = new Tarjeta("4269", $tiempo);
-        $compl = new Completo("420", $tiempo);
-        $medio = new Medio("12345", $tiempo);
-        $boletocomp = new Boleto(0, $colectivo, $compl);
-        $boletomedio = new Boleto(8.4, $colectivo, $medio);
-
+	    $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo);
+        $compl = new Completo(0, $tiempo);
+        $medio = new Medio(2, $tiempo);
+        
         $medio->recargar(10);
         
-        $this->assertEquals($boletocomp, $colectivo->pagarCon($compl));
-        $this->assertEquals($boletomedio, $colectivo->pagarCon($medio));
+        $this->assertEquals($colectivo->pagarCon($compl), new Boleto($colectivo, $compl, "Normal"));
+        $this->assertEquals($colectivo->pagarCon($medio), new Boleto($colectivo, $medio, "Normal"));
         $this->assertEquals($medio->obtenerSaldo(),1.6);
     }
 

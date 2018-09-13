@@ -10,7 +10,8 @@ class TarjetaTest extends TestCase {
      * Comprueba que la tarjeta aumenta su saldo cuando se carga saldo válido.
      */
     public function testCargaSaldo() {
-        $tarjeta = new Tarjeta; 
+        $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo); 
         
         $this->assertTrue($tarjeta->recargar(10));
         $this->assertEquals($tarjeta->obtenerSaldo(), 10);
@@ -30,8 +31,9 @@ class TarjetaTest extends TestCase {
 
     //Comprueba que la tarjeta se carga con el adicional
     public function testCargasConAdicional(){
-        $tarjeta1 = new Tarjeta;
-        $tarjeta2 = new Tarjeta;
+        $tiempo = new Tiempo;
+        $tarjeta1 = new Tarjeta(1, $tiempo);
+        $tarjeta2 = new Tarjeta(2, $tiempo);
 
         $this->assertTrue($tarjeta1->recargar(510.15));
         $this->assertEquals($tarjeta1->obtenerSaldo(), 592.08);
@@ -44,30 +46,11 @@ class TarjetaTest extends TestCase {
      * Comprueba que la tarjeta no puede cargar saldos invalidos.
      */
     public function testCargaSaldoInvalido() {
-      $tarjeta = new Tarjeta;
+        $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo);
 
-      $this->assertFalse($tarjeta->recargar(15));
-      $this->assertEquals($tarjeta->obtenerSaldo(), 0);
+        $this->assertFalse($tarjeta->recargar(15));
+        $this->assertEquals($tarjeta->obtenerSaldo(), 0);
   }
 
-    public function testCargaPlus(){
-        $tarjeta1 = new Tarjeta;
-        $tarjeta2 = new Tarjeta;
-        $colectivo = new Colectivo;
-
-        //aqui comprobamos que se descuente adecuadamente la cantidad de plus del monto a recargar
-        //tarjeta1 tendra 1 viaje plus usado
-        $tarjeta1->recargar(10);
-        $colectivo->pagarCon($tarjeta1);
-        
-        $this->assertEquals($tarjeta1->recargar(20), 5.20);
-
-        //tarjeta2 tiene los 2 viajes plus usados
-        $tarjeta2->recargar(10);
-        $colectivo->pagarCon($tarjeta2);
-        $colectivo->pagarCon($tarjeta2);
-        
-        $this->assertEquals($tarjeta2->recargar(30), 0.40);
-
-    }
 }

@@ -3,15 +3,15 @@
 namespace TrabajoTarjeta;
 
 class Tarjeta implements TarjetaInterface {
-    protected $saldo;
+    protected $valorBoleto = 16.8;
+    protected $saldo = 0;
     protected $cargas = array("10", "20", "30", "50", "100", "510.15", "962.59");
     protected $plus = 0;
-    protected $pasaje = 16.80;
+    protected $pasaje = 16.8;
     protected $tipo = "Normal";
     protected $id;
-    protected $total;
+    protected $total = 0;
     protected $horaPago;
-    protected $tiempo;
 
     public function __construct($id, TiempoInterface $tiempo){
       $this->id = $id;
@@ -68,17 +68,15 @@ class Tarjeta implements TarjetaInterface {
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus
           $this->saldo -= $this->valorPasaje();   //si no debe ninguno, se descuenta normalmente el saldo
           $this->total = $this->valorPasaje();
-          $this->horaPago = $this->tiempo->time();
+          $this->horaPago = $this->tiempo->time();  //guarda la hora en la que se realizo el pago
           return "PagoNormal";
         }
 
         elseif($this->plus == 1) {                //si debe uno se descuenta el valor del boleto + 16.8 (el valor del plus que debe)
-          if($this->saldo >= $this->valorPasaje() + 16.8){
-            $this->saldo -= $this->valorPasaje() + 16.8;
-            $this->total = $this->valorPasaje() + 16.8;
-            $this->plus = 0;
+          if($this->saldo >= $this->valorPasaje() + $this->valorBoleto){
+            $this->saldo -= $this->valorPasaje() + $this->abonaPlus();  //aca se resta el valor del pasaje de la tarjeta, la cantidad de plus que deba y se reinicia el contador de plus
             $this->horaPago = $this->tiempo->time();
-            return "PagoNormal";
+            return "AbonaPlus";
           }  
 
           else{                       //si no puede pagar el valor del boleto + el del plus que debe, no puede abonar el pasaje
@@ -87,12 +85,10 @@ class Tarjeta implements TarjetaInterface {
 
         }
         elseif($this->plus == 2) {                //si debe dos se descuenta el valor del boleto + 16.8 * 2 (el valor de los plus que debe)
-          if($this->saldo >= $this->valorPasaje() + 16.8 * 2){
-            $this->saldo -= $this->valorPasaje() + 16.8 * 2;
-            $this->total = $this->valorPasaje() + 16.8 * 2;
-            $this->plus = 0;
+          if($this->saldo >= $this->valorPasaje() + $this->valorBoleto * 2){
+            $this->saldo -= $this->valorPasaje() + $this->abonaPlus(); //aca se resta el valor del pasaje de la tarjeta, la cantidad de plus que deba y se reinicia el contador de plus
             $this->horaPago = $this->tiempo->time();
-            return "PagoNormal";
+            return "AbonaPlus";
           }  
 
           else{                       //si no puede pagar el valor del boleto + el de los plus que debe, no puede abonar el pasaje
@@ -126,6 +122,12 @@ class Tarjeta implements TarjetaInterface {
         return FALSE;
       }
 
+    }
+
+    public function abonaPlus(){
+      $pagoPlus = $this->valorBoleto * $this->plus;
+      $plus = 0;
+      return $pagoPlus;
     }
 
     public function obtenerTipo(){

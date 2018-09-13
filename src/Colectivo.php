@@ -10,6 +10,12 @@ class Colectivo implements ColectivoInterface {
 
     protected $numero;
 
+    public function __construct($linea, $empresa, $numero){
+        $this->linea = $linea;
+        $this->empresa = $empresa;
+        $this->numero = $numero;
+    }
+
     //Devuelve linea del colectivo(string)
     public function linea(){
         return $this->linea;
@@ -30,15 +36,23 @@ class Colectivo implements ColectivoInterface {
 
         switch($tarjeta->descontarSaldo()){
             case "PagoNormal":
-                return $boleto = new Boleto($tarjeta->valorPasaje(), $this, $tarjeta);
+                return $boleto = new Boleto($this, $tarjeta, "Normal");
+                break;
+            
+            case "AbonaPlus":
+                return $boleto = new Boleto($this, $tarjeta, "Normal");
                 break;
 
             case "Plus1":
-                return $boleto = new Boleto("Viaje Plus", $this, $tarjeta);
+                return $boleto = new Boleto($this, $tarjeta, "Viaje Plus");
                 break;
 
             case "Plus2":
-                return $boleto = new Boleto("Ultimo Plus", $this, $tarjeta);
+                return $boleto = new Boleto($this, $tarjeta, "Ultimo Plus");
+                break;
+
+            case FALSE:
+                return FALSE;
                 break;
         }
         

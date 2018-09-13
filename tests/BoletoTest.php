@@ -7,15 +7,15 @@ use PHPUnit\Framework\TestCase;
 class BoletoTest extends TestCase {
 
     public function testSaldoCero() {
-        $valor = 14.80;
+        $valor = 16.80;
 	
-	$tiempo = new Tiempo;
+	    $tiempo = new Tiempo;
 
-	$colectivo = new Colectivo("102", "Semtur", "420");
+	    $colectivo = new Colectivo("102", "Semtur", "420");
 
-	$tarjeta = new Tarjeta(4269, $tiempo);
+	    $tarjeta = new Tarjeta(1, $tiempo);
 
-        $boleto = new Boleto($valor, $colectivo, $tarjeta);
+        $boleto = new Boleto($colectivo, $tarjeta, "Normal");
 
         $this->assertEquals($boleto->obtenerValor(), $valor);
     }
@@ -25,13 +25,13 @@ class BoletoTest extends TestCase {
         $empresa = "Semtur";
         $numero = 420;
 
-	$tiempo = new Tiempo;
+	    $tiempo = new Tiempo;
 
-	$tarjeta = new Tarjeta(4269, $tiempo);
+	    $tarjeta = new Tarjeta(1, $tiempo);
 
         $colectivo = new Colectivo($linea, $empresa, $numero);
 
-        $boleto = new Boleto(NULL, $colectivo, $tarjeta);
+        $boleto = new Boleto($colectivo, $tarjeta, "Normal");
 
         $this->assertEquals($boleto->obtenerColectivo(), $colectivo);
 
