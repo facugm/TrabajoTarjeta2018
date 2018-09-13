@@ -39,8 +39,6 @@ class ColectivoTest extends TestCase {
 
 	    $tiempo = new Tiempo;
         $tarjeta = new Tarjeta(1, $tiempo);
-        //$plus1 = new Boleto($colectivo, $tarjeta, "Viaje Plus");    //primero creamos dos boletos, uno siendo un plus normal o primer plus
-        //$plus2 = new Boleto($colectivo, $tarjeta, "Ultimo Plus");   //y el otro es correspondiente a un segundo o ultimo plus
         
         $tarjeta->recargar(10);                 //recargamos una cantidad insuficiente de dinero en la tarjeta para que esta utilice los viajes plus
         

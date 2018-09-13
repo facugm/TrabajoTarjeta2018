@@ -129,7 +129,7 @@ class Tarjeta implements TarjetaInterface {
 
     public function abonaPlus(){
       $pagoPlus = $this->valorBoleto * $this->plus;
-      $this->plus = 0;
+      $plus = 0;
       return $pagoPlus;
     }
 
