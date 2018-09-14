@@ -18,7 +18,12 @@ class Boleto implements BoletoInterface {
 
     public function __construct($colectivo, $tarjeta, $tipoBoleto) {
 
-        $this->valor = $tarjeta->valorPasaje();
+        if($tipoBoleto == "Normal"){
+            $this->valor = $tarjeta->valorPasaje();
+        }
+        else{
+            $this->valor = 0.0;
+        }
 
         $this->colectivo = $colectivo;
 
@@ -42,24 +47,18 @@ class Boleto implements BoletoInterface {
 
     }
 
-    /**
-     * Devuelve el valor del boleto.
-     *
-     * @return int
-     */
+    
+     //Devuelve el valor del boleto
     public function obtenerValor() {
         return $this->valor;
     }
 
-    /**
-     * Devuelve un objeto que respresenta el colectivo donde se viajó.
-     *
-     * @return ColectivoInterface
-     */
+     //Devuelve un objeto que respresenta el colectivo donde se viajó
     public function obtenerColectivo() {
         return $this->colectivo;
     }
 
+    //Devuelve los datos del boleto emitido
     public function obtenerDescripcion(){
         $base = "Abona Viajes Plus ";
         $extraPlus = $this->total - $this->valor;

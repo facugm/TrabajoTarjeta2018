@@ -10,7 +10,6 @@ class Tarjeta implements TarjetaInterface {
     protected $plus = 0;
     protected $tipo = "Normal";
     protected $id;
-    protected $total = 0;
     protected $horaPago;
 
     public function __construct($id, TiempoInterface $tiempo){
@@ -38,14 +37,9 @@ class Tarjeta implements TarjetaInterface {
       return $cargavalida;
     }
 
-    //devuelve el valor de un pasaje
+    //Devuelve el valor de un pasaje
     public function valorPasaje(){
       return $this->pasaje;
-    }
-    
-    //esta funcion devuelve la cantidad de viajes plus que uso la tarjeta
-    public function tienePlus(){
-      return $this->plus;
     }
 
     //Suma 1 a la cantidad de viajes plus hechos
@@ -67,7 +61,6 @@ class Tarjeta implements TarjetaInterface {
       if($this->saldo >= $this->valorPasaje()){         //se verifica si tiene saldo
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus
           $this->saldo -= $this->valorPasaje();   //si no debe ninguno, se descuenta normalmente el saldo
-          $this->total = $this->valorPasaje();
           $this->horaPago = $this->tiempo->time();  //guarda la hora en la que se realizo el pago
           return "PagoNormal";
         }
@@ -81,7 +74,6 @@ class Tarjeta implements TarjetaInterface {
 
           else{//si no puede pagar el valor del boleto + el del plus que debe, no puede abonar el pasaje
             $this->viajePlus();
-            $this->total = 0.0;
             $this->horaPago = $this->tiempo->time();
             return "Plus2";
           }
@@ -106,14 +98,12 @@ class Tarjeta implements TarjetaInterface {
         switch($this->plus){
           case 0:
             $this->viajePlus();//dependiendiendo de la cantidad de viajes plus que le queden hace 1 o 2 viajes
-            $this->total = 0.0;
             $this->horaPago = $this->tiempo->time();
             return "Plus1";
             break;
           
           case 1:
             $this->viajePlus();
-            $this->total = 0.0;
             $this->horaPago = $this->tiempo->time();
             return "Plus2";
             break;
@@ -135,10 +125,6 @@ class Tarjeta implements TarjetaInterface {
 
     public function obtenerTipo(){
       return $this->tipo;
-    }
-
-    public function totalPagado(){
-      return $this->total;
     }
 
     public function obtenerFecha(){
