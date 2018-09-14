@@ -10,7 +10,8 @@ class TarjetaTest extends TestCase {
      * Comprueba que la tarjeta aumenta su saldo cuando se carga saldo válido.
      */
     public function testCargaSaldo() {
-        $tarjeta = new Tarjeta; 
+        $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo); 
         
         $this->assertTrue($tarjeta->recargar(10));
         $this->assertEquals($tarjeta->obtenerSaldo(), 10);
@@ -30,8 +31,9 @@ class TarjetaTest extends TestCase {
 
     //Comprueba que la tarjeta se carga con el adicional
     public function testCargasConAdicional(){
-        $tarjeta1 = new Tarjeta;
-        $tarjeta2 = new Tarjeta;
+        $tiempo = new Tiempo;
+        $tarjeta1 = new Tarjeta(1, $tiempo);
+        $tarjeta2 = new Tarjeta(2, $tiempo);
 
         $this->assertTrue($tarjeta1->recargar(510.15));
         $this->assertEquals($tarjeta1->obtenerSaldo(), 592.08);
@@ -44,30 +46,56 @@ class TarjetaTest extends TestCase {
      * Comprueba que la tarjeta no puede cargar saldos invalidos.
      */
     public function testCargaSaldoInvalido() {
-      $tarjeta = new Tarjeta;
+        $tiempo = new Tiempo;
+        $tarjeta = new Tarjeta(1, $tiempo);
 
-      $this->assertFalse($tarjeta->recargar(15));
-      $this->assertEquals($tarjeta->obtenerSaldo(), 0);
+        $this->assertFalse($tarjeta->recargar(15));
+        $this->assertEquals($tarjeta->obtenerSaldo(), 0);
   }
 
-    public function testCargaPlus(){
-        $tarjeta1 = new Tarjeta;
-        $tarjeta2 = new Tarjeta;
-        $colectivo = new Colectivo;
+    public function testLimiteTiempoMedio(){
+        $tiempo = new TiempoFalso;
+        $medio = new Medio(1, $tiempo);
+        $colectivo = new Colectivo(102, "semtur", 2);
 
-        //aqui comprobamos que se descuente adecuadamente la cantidad de plus del monto a recargar
-        //tarjeta1 tendra 1 viaje plus usado
-        $tarjeta1->recargar(10);
-        $colectivo->pagarCon($tarjeta1);
+        $medio->recargar(20);
         
-        $this->assertEquals($tarjeta1->recargar(20), 5.20);
+        $this->assertEquals($colectivo->pagarCon($medio), new Boleto($colectivo, $medio, "Normal")); // se comprueba que se emite medio normal
+        $tiempo->avanzar(150); //y al pasar dos minutos y medio
 
-        //tarjeta2 tiene los 2 viajes plus usados
-        $tarjeta2->recargar(10);
-        $colectivo->pagarCon($tarjeta2);
-        $colectivo->pagarCon($tarjeta2);
+        $this->assertFalse($colectivo->pagarCon($medio)); //no puede pagar
+
+        $tiempo->avanzar(180); //pero al pasar otros 3 minutos
+
+        $this->assertEquals($colectivo->pagarCon($medio), new Boleto($colectivo, $medio, "Normal")); //se emite un medio normal sin problemas
+  }
+
+    public function testLimiteMedioUni(){
+        $tiempo = new TiempoFalso;
+        $uni = new MedioUniversitario(1, $tiempo);
+        $colectivo = new Colectivo(102, "Semtur", 3);
+
+        $uni->recargar(50);
+
+
+        $this->assertEquals($colectivo->pagarCon($uni), $medio1 = new Boleto($colectivo, $uni, "Normal"));
+        $this->assertEquals($medio1->obtenerValor(), 8.4);  //pago medio boleto
+
+        $tiempo->avanzar(3600); //avanzar una hora
+
+        $this->assertEquals($colectivo->pagarCon($uni), $medio2 = new Boleto($colectivo, $uni, "Normal"));
+        $this->assertEquals($medio2->obtenerValor(), 8.4); //pago segundo medio boleto
         
-        $this->assertEquals($tarjeta2->recargar(30), 0.40);
 
+        $tiempo->avanzar(3600); //avanzamos una hora en el tiempo
+
+        $this->assertEquals($colectivo->pagarCon($uni), $boleto = new Boleto($colectivo, $uni, "Normal"));
+        $this->assertEquals($boleto->obtenerValor(), 16.8); // y pagamos un boleto normal porque ya usamos los 2 medios que teniamos disponibles
+
+        $tiempo->avanzar(86400);//avanzamos un dia en el tiempo
+
+        $this->assertEquals($colectivo->pagarCon($uni), $boleto = new Boleto($colectivo, $uni, "Normal"));
+        $this->assertEquals($boleto->obtenerValor(), 8.4); // se emite el primer medio ya que paso un dia
     }
+
 }

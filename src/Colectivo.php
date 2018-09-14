@@ -10,6 +10,12 @@ class Colectivo implements ColectivoInterface {
 
     protected $numero;
 
+    public function __construct($linea, $empresa, $numero){
+        $this->linea = $linea;
+        $this->empresa = $empresa;
+        $this->numero = $numero;
+    }
+
     //Devuelve linea del colectivo(string)
     public function linea(){
         return $this->linea;
@@ -28,33 +34,26 @@ class Colectivo implements ColectivoInterface {
     //Por ahora solo devuelve el boleto si el saldo es suficiente
     public function pagarCon(TarjetaInterface $tarjeta){
 
-        if($tarjeta->obtenerSaldo() >= $tarjeta->valorPasaje()){
-
-            $tarjeta->descontarSaldo();
-            return $boleto = new Boleto($tarjeta->valorPasaje(),$this,$tarjeta);
-        
-        }
-        
-        else{
-
-            //aca se verifica si a la tarjeta le quedan viajes plus y cuantos
-            //dependiendo de la cantidad de plus restantes retorna un boleto diferente
-            if($tarjeta->tienePlus() == 0) {
-
-                $tarjeta->viajePlus();      //si la tarjeta utilizo algun plus, se lo acredita y emite un boleto acorde al mismo
-                return $boleto = new Boleto("Viaje Plus",$this,$tarjeta);
-
-            }
-
-            if($tarjeta->tienePlus() == 1) {
-
-                $tarjeta->viajePlus();      //si la tarjeta ya tenía un plus, se lo acredita y emite un boleto indicando que es el ultimo que puede utilizar
-                return $boleto = new Boleto("Ultimo Plus",$this,$tarjeta);
-
-            }
+        switch($tarjeta->descontarSaldo()){
+            case "PagoNormal":
+                return $boleto = new Boleto($this, $tarjeta, "Normal");
+                break;
             
-            //si la tarjeta no tiene saldo y tampoco le quedan viajes plus, devuelve FALSE
-            return FALSE;
-        }
+            case "AbonaPlus":
+                return $boleto = new Boleto($this, $tarjeta, "Normal");
+                break;
+
+            case "Plus1":
+                return $boleto = new Boleto($this, $tarjeta, "Viaje Plus");
+                break;
+
+            case "Plus2":
+                return $boleto = new Boleto($this, $tarjeta, "Ultimo Plus");
+                break;
+
+            case FALSE:
+                return FALSE;
+                break;
+        }        
     }
 }
