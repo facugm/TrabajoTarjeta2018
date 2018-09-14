@@ -56,7 +56,7 @@ class Tarjeta implements TarjetaInterface {
       return $this->saldo;
     }
     
-    public function descontarSaldo(){
+    public function pagarBoleto(){
 
       if($this->saldo >= $this->valorPasaje()){         //se verifica si tiene saldo
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus
@@ -115,6 +115,10 @@ class Tarjeta implements TarjetaInterface {
         return FALSE;
       }
 
+    }
+
+    public function descontarSaldo(){
+      return $this->pagarBoleto();
     }
 
     public function abonaPlus(){

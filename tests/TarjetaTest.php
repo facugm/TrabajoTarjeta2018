@@ -53,4 +53,49 @@ class TarjetaTest extends TestCase {
         $this->assertEquals($tarjeta->obtenerSaldo(), 0);
   }
 
+    public function testLimiteTiempoMedio(){
+        $tiempo = new TiempoFalso;
+        $medio = new Medio(1, $tiempo);
+        $colectivo = new Colectivo(102, "semtur", 2);
+
+        $medio->recargar(20);
+        
+        $this->assertEquals($colectivo->pagarCon($medio), new Boleto($colectivo, $medio, "Normal")); // se comprueba que se emite medio normal
+        $tiempo->avanzar(150); //y al pasar dos minutos y medio
+
+        $this->assertFalse($colectivo->pagarCon($medio)); //no puede pagar
+
+        $tiempo->avanzar(180); //pero al pasar otros 3 minutos
+
+        $this->assertEquals($colectivo->pagarCon($medio), new Boleto($colectivo, $medio, "Normal")); //se emite un medio normal sin problemas
+  }
+
+    public function testLimiteMedioUni(){
+        $tiempo = new TiempoFalso;
+        $uni = new MedioUniversitario(1, $tiempo);
+        $colectivo = new Colectivo(102, "Semtur", 3);
+
+        $uni->recargar(50);
+
+
+        $this->assertEquals($colectivo->pagarCon($uni), $medio1 = new Boleto($colectivo, $uni, "Normal"));
+        $this->assertEquals($medio1->obtenerValor(), 8.4);  //pago medio boleto
+
+        $tiempo->avanzar(3600); //avanzar una hora
+
+        $this->assertEquals($colectivo->pagarCon($uni), $medio2 = new Boleto($colectivo, $uni, "Normal"));
+        $this->assertEquals($medio2->obtenerValor(), 8.4); //pago segundo medio boleto
+        
+
+        $tiempo->avanzar(3600); //avanzamos una hora en el tiempo
+
+        $this->assertEquals($colectivo->pagarCon($uni), $boleto = new Boleto($colectivo, $uni, "Normal"));
+        $this->assertEquals($boleto->obtenerValor(), 16.8); // y pagamos un boleto normal porque ya usamos los 2 medios que teniamos disponibles
+
+        $tiempo->avanzar(86400);//avanzamos un dia en el tiempo
+
+        $this->assertEquals($colectivo->pagarCon($uni), $boleto = new Boleto($colectivo, $uni, "Normal"));
+        $this->assertEquals($boleto->obtenerValor(), 8.4); // se emite el primer medio ya que paso un dia
+    }
+
 }
