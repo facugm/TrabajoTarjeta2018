@@ -58,7 +58,13 @@ class Tarjeta implements TarjetaInterface {
     
     public function pagarBoleto(){
 
-      if($this->saldo >= $this->valorPasaje()){         //se verifica si tiene saldo
+      if($this->esTrasbordo()){  //Si es trasbordo
+        $this->saldo -= ($this->valorPasaje() * 0.33); //Se cobra un 33% del valor del pasaje
+        $this->horaPago = $this->tiempo->time();       //guarda la hora en la que se realizo el pago
+        return "Trasbordo";
+      }
+
+      if($this->saldo >= $this->valorPasaje()){   //se verifica si tiene saldo
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus
           $this->saldo -= $this->valorPasaje();   //si no debe ninguno, se descuenta normalmente el saldo
           $this->horaPago = $this->tiempo->time();  //guarda la hora en la que se realizo el pago
@@ -139,4 +145,37 @@ class Tarjeta implements TarjetaInterface {
       return $this->id;
     }
 
+    public function esTrasbordo(){
+      if ((date("w",$this->obtenerFecha()) <= 5 && date("w",$this->obtenerFecha()) >= 1)){ //De lunes a viernes
+        if((date("H", $this->obtenerFecha()) >= 6 && (date("H", $this->obtenerFecha()) <= 22 ))){ //De 6 a 22
+          if($this->tiempo->time() - $this->obtenerFecha() <= 3600){ //Si pasó una hora o menos
+            return TRUE; //Paga trasbordo
+          }
+        }
+      }
+
+      if(date("w",$this->obtenerFecha()) == 6 ){ //Si es sábado
+        if(date("H", $this->obtenerFecha()) >= 6 && date("H", $this->obtenerFecha()) <= 14 ) { //De 6 a 14
+          if($this->tiempo->time() - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
+            return TRUE; //Paga trasbordo
+          }
+        } 
+      }
+
+      if(date("w",$this->obtenerFecha()) == 0 ){ //Si es domingo
+        if((date("H", $this->obtenerFecha()) >= 6 && (date("H", $this->obtenerFecha()) <= 22 ))) { //De 6 a 22
+          if($this->tiempo->time() - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
+            return TRUE; //Paga trasbordo
+          }
+        } 
+      }
+    
+      if(date("H", $this->obtenerFecha()) >= 22 && date("H", $this->obtenerFecha()) <= 6 ) { //De 22 a 6
+        if($this->tiempo->time() - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
+          return TRUE; //Paga trasbordo
+        }
+      }
+
+      return FALSE;
 }
+
