@@ -60,11 +60,11 @@ class Tarjeta implements TarjetaInterface {
     
     public function pagarBoleto(){
 
-      if($this->esTrasbordo()){  //Si es trasbordo
-        $this->saldo -= ($this->valorPasaje() * 0.33); //Se cobra un 33% del valor del pasaje
+      /*if($this->esTrasbordo()){  //Si es trasbordo
+        $this->saldo -= round($this->valorPasaje() / 0.33); //Se cobra un 33% del valor del pasaje
         $this->horaPago = $this->tiempo->time();       //guarda la hora en la que se realizo el pago
         return "Trasbordo";
-      }
+      }*/
 
       if($this->saldo >= $this->valorPasaje()){   //se verifica si tiene saldo
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus

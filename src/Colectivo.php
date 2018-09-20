@@ -43,6 +43,10 @@ class Colectivo implements ColectivoInterface {
                 $tarjeta->obtenerColectivo($this);
                 return $boleto = new Boleto($this, $tarjeta, "AbonaPlus");
 
+            case "Trasbordo":
+                $tarjeta->obtenerColectivo($this);
+                return $boleto = new Boleto($this, $tarjeta, "Trasbordo");
+
             case "Plus1":
                 return $boleto = new Boleto($this, $tarjeta, "Viaje Plus");
 

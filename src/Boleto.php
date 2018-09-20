@@ -18,7 +18,7 @@ class Boleto implements BoletoInterface {
 
     public function __construct($colectivo, $tarjeta, $tipoBoleto) {
 
-        if($tipoBoleto == "Normal"){
+        if($tipoBoleto == "Normal" || $tipoBoleto == "AbonaPlus"){
             $this->valor = $tarjeta->valorPasaje();
         }
         else{
