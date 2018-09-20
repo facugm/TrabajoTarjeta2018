@@ -60,10 +60,13 @@ class Boleto implements BoletoInterface {
 
     //Devuelve los datos del boleto emitido
     public function obtenerDescripcion(){
-        $base = "Abona Viajes Plus ";
-        $extraPlus = $this->total - $this->valor;
-        $final = $base . $extraPlus . " y";
-        return $final;
+        if($this->tipoBoleto == "AbonaPlus"){
+            $base = "Abona Viajes Plus ";
+            $extraPlus = $this->total - $this->valor;
+            $final = $base . $extraPlus . " y";
+            return $final;
+        }
+        return NULL;
     }
 
 }

@@ -37,23 +37,18 @@ class Colectivo implements ColectivoInterface {
         switch($tarjeta->descontarSaldo()){
             case "PagoNormal":
                 return $boleto = new Boleto($this, $tarjeta, "Normal");
-                break;
             
             case "AbonaPlus":
-                return $boleto = new Boleto($this, $tarjeta, "Normal");
-                break;
+                return $boleto = new Boleto($this, $tarjeta, "AbonaPlus");
 
             case "Plus1":
                 return $boleto = new Boleto($this, $tarjeta, "Viaje Plus");
-                break;
 
             case "Plus2":
                 return $boleto = new Boleto($this, $tarjeta, "Ultimo Plus");
-                break;
 
             case FALSE:
                 return FALSE;
-                break;
         }        
     }
 }
