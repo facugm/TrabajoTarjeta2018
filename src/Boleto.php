@@ -48,12 +48,12 @@ class Boleto implements BoletoInterface {
     }
 
     
-     //Devuelve el valor del boleto
+    //Devuelve el valor del boleto
     public function obtenerValor() {
         return $this->valor;
     }
 
-     //Devuelve un objeto que respresenta el colectivo donde se viajó
+    //Devuelve un objeto que respresenta el colectivo donde se viajó
     public function obtenerColectivo() {
         return $this->colectivo;
     }
