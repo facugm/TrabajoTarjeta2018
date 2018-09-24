@@ -5,13 +5,13 @@ namespace TrabajoTarjeta;
 class Colectivo implements ColectivoInterface {
 
     protected $linea;
-
     protected $empresa;
-
     protected $numero;
+    protected $bandera;
 
-    public function __construct($linea, $empresa, $numero){
+    public function __construct($linea, $bandera, $empresa, $numero){
         $this->linea = $linea;
+        $this->bandera = $bandera;
         $this->empresa = $empresa;
         $this->numero = $numero;
     }
@@ -19,6 +19,10 @@ class Colectivo implements ColectivoInterface {
     //Devuelve linea del colectivo(string)
     public function linea(){
         return $this->linea;
+    }
+
+    public function bandera(){
+        return $this->bandera;
     }
 
     //Devuelve empresa del colectivo(string)

@@ -17,6 +17,7 @@ class Tarjeta implements TarjetaInterface {
     public function __construct($id, TiempoInterface $tiempo){
       $this->id = $id;
       $this->tiempo = $tiempo;
+      $this->anteriorColectivo = NULL;
     }
 
     public function recargar($monto) {
@@ -60,11 +61,11 @@ class Tarjeta implements TarjetaInterface {
     
     public function pagarBoleto(){
 
-      /*if($this->esTrasbordo()){  //Si es trasbordo
+      if($this->esTrasbordo()){  //Si es trasbordo
         $this->saldo -= round($this->valorPasaje() / 0.33); //Se cobra un 33% del valor del pasaje
         $this->horaPago = $this->tiempo->time();       //guarda la hora en la que se realizo el pago
         return "Trasbordo";
-      }*/
+      }
 
       if($this->saldo >= $this->valorPasaje()){   //se verifica si tiene saldo
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus
@@ -148,7 +149,7 @@ class Tarjeta implements TarjetaInterface {
     }
 
     public function esTrasbordo(){
-      if($this->anteriorColectivo != $this->actualColectivo){ // si el colectivo en el que se esta usando la tarjeta ahora es diferente al anterior
+      if($this->colectivosDiferentes()){ // si el colectivo en el que se esta usando la tarjeta ahora es diferente al anterior
         if ((date("w",$this->obtenerFecha()) <= 5 && date("w",$this->obtenerFecha()) >= 1)){ //De lunes a viernes
           if((date("H", $this->obtenerFecha()) >= 6 && (date("H", $this->obtenerFecha()) <= 22 ))){ //De 6 a 22
             if($this->tiempo->time() - $this->obtenerFecha() <= 3600){ //Si pasó una hora o menos
@@ -182,7 +183,6 @@ class Tarjeta implements TarjetaInterface {
       }
 
       return FALSE;
-        
     }
 
     public function obtenerColectivo(ColectivoInterface $colectivo){
@@ -190,4 +190,19 @@ class Tarjeta implements TarjetaInterface {
       $this->actualColectivo = $colectivo; //obtiene el colectivo en el que se esta usando la tarjeta
     }
 
-}
+    public function colectivosDiferentes(){
+      if($this->anteriorColectivo != NULL){
+      $linea1 = $this->anteriorColectivo->linea();
+      $linea2 = $this->actualColectivo->linea();
+
+      $bandera1 = $this->anteriorColectivo->bandera();
+      $bandera2 = $this->actualColectivo->bandera();
+    
+      if($linea1 != $linea2 or $bandera1 != $bandera2){
+        return TRUE;        
+      }
+    }
+
+      return FALSE;                  
+    }
+  }

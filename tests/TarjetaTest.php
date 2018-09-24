@@ -53,10 +53,10 @@ class TarjetaTest extends TestCase {
         $this->assertEquals($tarjeta->obtenerSaldo(), 0);
   }
 
-    public function testLimiteTiempoMedio(){
+    public function testLimiteTiempoMedio(){ //Comprueba que se puedan emitir dos medios recién al haber pasado 5 minutos
         $tiempo = new TiempoFalso;
         $medio = new Medio(1, $tiempo);
-        $colectivo = new Colectivo(102, "semtur", 2);
+        $colectivo = new Colectivo("102", "Negra", "Semtur", 2);
 
         $medio->recargar(20);
         
@@ -73,7 +73,7 @@ class TarjetaTest extends TestCase {
     public function testLimiteMedioUni(){
         $tiempo = new TiempoFalso;
         $uni = new MedioUniversitario(1, $tiempo);
-        $colectivo = new Colectivo(102, "Semtur", 3);
+        $colectivo = new Colectivo("102", "Negra", "Semtur", 3);
 
         $uni->recargar(50);
 
@@ -98,4 +98,5 @@ class TarjetaTest extends TestCase {
         $this->assertEquals($boleto->obtenerValor(), 8.4); // se emite el primer medio ya que paso un dia
     }
 
+   
 }

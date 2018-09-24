@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 class ColectivoTest extends TestCase {
 
     public function testPagarSaldoInsuf() {
-        $colectivo = new Colectivo(102, "Semtur", 420);
+        $colectivo = new Colectivo("102", "Negra", "Semtur", 420);
 
 	    $tiempo = new Tiempo;
         $tarjeta = new Tarjeta(1, $tiempo );
@@ -22,7 +22,7 @@ class ColectivoTest extends TestCase {
     }
 
     public function testPagarSaldoSuf(){
-        $colectivo = new Colectivo("102", "Semtur", "420") ;
+        $colectivo = new Colectivo("102", "Negra", "Semtur", "420") ;
 	
 	    $tiempo = new Tiempo;
         $tarjeta = new Tarjeta(1, $tiempo);
@@ -35,7 +35,7 @@ class ColectivoTest extends TestCase {
     }
 
     public function testViajesPlus() {
-        $colectivo = new Colectivo("102", NULL, NULL);
+        $colectivo = new Colectivo("102", NULL, NULL, NULL);
 
 	    $tiempo = new Tiempo;
         $tarjeta = new Tarjeta(1, $tiempo);
@@ -55,7 +55,7 @@ class ColectivoTest extends TestCase {
     }
 
     public function testFranquicias(){
-        $colectivo = new Colectivo("102", NULL, NULL);
+        $colectivo = new Colectivo("102", NULL, NULL, NULL);
 
 	    $tiempo = new Tiempo;
         $tarjeta = new Tarjeta(1, $tiempo);
@@ -85,7 +85,7 @@ class ColectivoTest extends TestCase {
     }
 
     public function testDatosColectivo(){
-        $colectivo = new Colectivo(102, "Semtur", 2);
+        $colectivo = new Colectivo("102", "Negra", "Semtur", 2); 
 
         $this->assertEquals($colectivo->linea(), 102);
         $this->assertEquals($colectivo->empresa(), "Semtur");
@@ -95,7 +95,7 @@ class ColectivoTest extends TestCase {
     public function testDebePlusNormal(){
         $tiempo = new Tiempo;
         $tarjeta = new Tarjeta(1, $tiempo);
-        $colectivo = new Colectivo(102, "Semtur", 40);
+        $colectivo = new Colectivo("102", "Negra", "Semtur", 40);
 
         $tarjeta->recargar(10);  
         $colectivo->pagarCon($tarjeta);  //usamos un viaje plus
@@ -125,7 +125,7 @@ class ColectivoTest extends TestCase {
     public function testDebePlusMedio(){
         $tiempo = new Tiempo;
         $medio = new Medio(1, $tiempo);
-        $colectivo = new Colectivo(102, "Semtur", 40);
+        $colectivo = new Colectivo("102", "Negra", "Semtur", 40);
 
         $medio->recargar(10);
         $colectivo->pagarCon($medio); //boleto normal
