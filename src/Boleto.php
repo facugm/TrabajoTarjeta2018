@@ -24,7 +24,7 @@ class Boleto implements BoletoInterface {
                 break;
                                                                                                 
             case "Trasbordo":
-                $this->valor = $tarjeta->valorPasaje();
+                $this->valor = $tarjeta->valorPasaje() * 0.33;
                 break;
 
             case "AbonaPlus":

@@ -169,6 +169,7 @@ class Tarjeta implements TarjetaInterface {
       $dia = date("w", $tiempoActual);
 
       if($this->colectivosDiferentes()){ //Si el colectivo en el que se esta usando la tarjeta ahora es diferente al anterior
+
         if($hora >= 22 || $hora < 6 ) { //Todos los dias de 22 a 6
           if($tiempoActual - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
             $this->fueTrasbordo = TRUE;
@@ -191,7 +192,7 @@ class Tarjeta implements TarjetaInterface {
           }
         }
 
-        elseif($dia == 0 ){ //Si es domingo
+        elseif($dia == 0 || $this->esFeriado()){ //Si es domingo o feriado
           if($hora >= 6 && $hora < 22 ) { //De 6 a 22
             if($tiempoActual - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
               $this->fueTrasbordo = TRUE;
@@ -226,5 +227,28 @@ class Tarjeta implements TarjetaInterface {
     
 
       return FALSE;                  
+    }
+
+    public function esFeriado(){
+
+      $fecha = date('d-m',$this->tiempo->time());
+
+      $feriados = array( 
+            '01-01',  //  Año Nuevo
+            '24-03',  //  Día Nacional de la Memoria por la Verdad y la Justicia.
+            '02-04',  //  Día del Veterano y de los Caídos en la Guerra de Malvinas.
+            '01-05',  //  Día del trabajador.
+            '25-05',  //  Día de la Revolución de Mayo. 
+            '17-06',  //  Día Paso a la Inmortalidad del General Martín Miguel de Güemes.
+            '20-06',  //  Día Paso a la Inmortalidad del General Manuel Belgrano. F
+            '09-07',  //  Día de la Independencia.
+            '17-08',  //  Paso a la Inmortalidad del Gral. José de San Martín
+            '12-10',  //  Día del Respeto a la Diversidad Cultural 
+            '20-11',  //  Día de la Soberanía Nacional
+            '08-12',  //  Inmaculada Concepción de María
+            '25-12',  //  Navidad
+            );
+
+      return in_array($fecha,$feriados); //Si la fecha está en el array, es feriado
     }
   }
