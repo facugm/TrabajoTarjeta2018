@@ -60,7 +60,7 @@ class Tarjeta implements TarjetaInterface {
       return $this->saldo;
     }
     
-    protected function pagarBoleto(){
+    protected function pagarBoleto(){ //En esta funcion se descuenta el saldo y retorna el tipo de pago que luego determina el tipo de boleto a emitir
 
       if($this->esTrasbordo()){  //Si es trasbordo
 
@@ -127,7 +127,8 @@ class Tarjeta implements TarjetaInterface {
 
       else{//si no le queda saldo ni plus, no puede pagar
         return FALSE;
-      } }
+      }
+    }
 
     public function descontarSaldo(ColectivoInterface $colectivo){
       if($this->anteriorColectivo == NULL){ 
