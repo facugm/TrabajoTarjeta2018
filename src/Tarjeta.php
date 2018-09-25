@@ -102,7 +102,9 @@ class Tarjeta implements TarjetaInterface {
             return "AbonaPlus";
           }
         
-          return FALSE; //si no puede pagar el valor del boleto + el de los plus que debe, no puede abonar el pasaje
+        else{//si no puede pagar el valor del boleto + el de los plus que debe, no puede abonar el pasaje
+          return FALSE;
+        }
 
         }
 
@@ -123,9 +125,7 @@ class Tarjeta implements TarjetaInterface {
         }
       }
 
-      else{//si no le queda saldo ni plus, no puede pagar
-        return FALSE;
-      }
+        return FALSE; //si no le queda saldo ni plus, no puede pagar
     }
 
     public function descontarSaldo(ColectivoInterface $colectivo){
