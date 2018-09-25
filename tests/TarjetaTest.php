@@ -145,12 +145,12 @@ class TarjetaTest extends TestCase {
         $this->assertEquals($negra102->pagarCon($tarjeta), new Boleto($negra102, $tarjeta, "Trasbordo")); //Comprobamos que se emita un trasbordo
     
         $tiempo->avanzar(18900); //Nos movemos al sábado a las 15:25
-
+        
         $negra102->pagarCon($tarjeta);
 
         $tiempo->avanzar(4500); //Avanzamos 90 minutos
 
-        $this->assertNotEquals($negra102diferente->pagarCon($tarjeta), new Boleto($negra102diferente, $tarjeta, "Trasbordo")); //Comprobamos que no se emita trasbordo en colectivos distintos con la misma bandera
+        $this->assertEquals($negra103->pagarCon($tarjeta), new Boleto($negra103, $tarjeta, "Trasbordo")); //Comprobamos que no se emita trasbordo en colectivos distintos con la misma bandera
 
         //Test domingos, pueden pasar hasta 90 minutos
         $tiempo->avanzar(86400);
@@ -159,7 +159,7 @@ class TarjetaTest extends TestCase {
 
         $tiempo->avanzar(600); //Avanzo 10 minutos
         
-        $this->assertNotEquals($negra102->pagarCon($tarjeta), new Boleto($negra102, $tarjeta, "Trasbordo")); //Comprobamos que no se pueden emitir trasbordos en el mismo colectivo
+        $this->assertNotEquals($negra102->pagarCon($tarjeta), new Boleto($negra102, $tarjeta, "Trasbordo")); //Comprobamos que se puede emitir el trasbordo
         
         $tiempo->avanzar(86400); //Nos movemos al lunes a las 16:50
 
@@ -168,7 +168,13 @@ class TarjetaTest extends TestCase {
         
         $tiempo->avanzar(2400); //Avanzamos 40 minutos
 
-        $this->assertEquals($negra103->pagarCon($tarjeta), new Boleto($negra103, $tarjeta, "Trasbordo")); //Comprobams que se emita un trasbordo
+        $this->assertEquals($negra103->pagarCon($tarjeta), new Boleto($negra103, $tarjeta, "Trasbordo")); //Comprobamos que se emita un trasbordo
+
+        $negra102->pagarCon($tarjeta);
+
+        $tiempo->avanzar(600);
+
+        $this->assertNotEquals($negra102diferente->pagarCon($tarjeta), new Boleto($negra102diferente, $tarjeta, "Trasbordo")); //Comprobamos que se puede emitir el trasbordo en un colectivo con la misma linea y bandera que el anterior
 
     }
 
@@ -224,7 +230,7 @@ class TarjetaTest extends TestCase {
 
         $tiempo->avanzar(4500); //Avanzamos 90 minutos
 
-        $this->assertNotEquals($negra102diferente->pagarCon($medio), new Boleto($negra102diferente, $medio, "Trasbordo")); //Comprobamos que no se emita trasbordo en colectivos distintos con la misma bandera
+        $this->assertEquals($negra103->pagarCon($medio), new Boleto($negra103, $medio, "Trasbordo")); //Comprobamos que que se emite un trasbordo
 
         //Test domingos, pueden pasar hasta 90 minutos
         $tiempo->avanzar(86400);
@@ -242,7 +248,94 @@ class TarjetaTest extends TestCase {
         
         $tiempo->avanzar(2400); //Avanzamos 40 minutos
 
-        $this->assertEquals($negra103->pagarCon($medio), new Boleto($negra103, $medio, "Trasbordo")); //Comprobams que se emita un trasbordo                              
+        $this->assertEquals($negra103->pagarCon($medio), new Boleto($negra103, $medio, "Trasbordo")); //Comprobamos que se emita un trasbordo   
+        
+        $negra102->pagarCon($medio);
+
+        $tiempo->avanzar(600);
+
+        $this->assertNotEquals($negra102diferente->pagarCon($medio), new Boleto($negra102diferente, $medio, "Trasbordo")); //Comprobamos que se puede emitir el trasbordo en un colectivo con la misma linea y bandera que el anterior
+
+    }
+
+    public function testTrasbordoMedioUni(){
+        $tiempo = new TiempoFalso;
+        $medioUni = new MedioUniversitario(1, $tiempo);
+                                                                                                                            
+        $negra102 = new Colectivo ("102", "Negra", "Semtur", 2);
+        $roja102 = new Colectivo ("102", "Roja", "Semtur", 3);
+        $negra103 = new Colectivo ("103", "Negra", "Semtur", 23);
+        $negra102diferente = new Colectivo ("102", "Negra", "Semtur", 65);
+
+        $medioUni->recargar(100);
+        $negra102->pagarCon($medioUni);
+
+        $tiempo->avanzar(5400); //Avanzamos 90 minutos
+
+        //Test franja nocturna, pueden pasar hasta 90 minutos
+        $this->assertEquals($roja102->pagarCon($medioUni), new Boleto($roja102, $medioUni, "Trasbordo")); //Chequeamos que el boleto sea de tipo trasbordo
+        $this->assertEquals($medioUni->obtenerSaldo(), 88.83);
+        $this->assertNotEquals($roja102->pagarCon($medioUni), new Boleto($roja102, $medioUni, "Trasbordo")); //Verificamos que no pueda emitir dos trasbordos seguidos
+        
+        $tiempo->avanzar(16200); //Avanzamos hasta las 6 de la mañana
+        
+        //Test feriado (Año nuevo), límite de tiempo: 90 minutos
+        $negra102->pagarCon($medioUni);
+        
+        $tiempo->avanzar(5400); //Avanzamos hora y media
+
+
+        $this->assertEquals($negra103->pagarCon($medioUni), new Boleto($negra103, $medioUni, "Trasbordo")); //Comprobamos que se emita un trasbordo
+        $this->assertEquals($medioUni->obtenerSaldo(), 49.69);
+        $this->assertNotEquals($negra103->pagarCon($medioUni), new Boleto($negra103, $medioUni, "Trasbordo")); //Comprobamos que se emita un boleto normal
+
+        $tiempo->avanzar(6000); //Hacemos pasar 100 minutos
+
+        $this->assertNotEquals($negra103->pagarCon($medioUni), new Boleto($negra103, $medioUni, "Trasbordo")); //Y verificamos que no se emita un trasbordo fuera del limte de tiempo
+        
+        $medioUni->recargar(510.15); //le cargamos un total de 597 pesos
+
+        //Test sábados, distintas franjas horarias
+        $tiempo->avanzar(172800); //Avanzamos al sabado a las 9:10
+
+        $roja102->pagarCon($medioUni);
+        
+        $tiempo->avanzar(3600); //Una hora después...
+
+        $this->assertEquals($negra102->pagarCon($medioUni), new Boleto($negra102, $medioUni, "Trasbordo")); //Comprobamos que se emita un trasbordo
+    
+        $tiempo->avanzar(18900); //Nos movemos al sábado a las 15:25
+
+        $negra102->pagarCon($medioUni);
+
+        $tiempo->avanzar(4500); //Avanzamos 90 minutos
+
+        $this->assertEquals($negra103->pagarCon($medioUni), new Boleto($negra103, $medioUni, "Trasbordo")); //Comprobamos que que se emite un trasbordo
+
+        //Test domingos, pueden pasar hasta 90 minutos
+        $tiempo->avanzar(86400);
+
+        $negra102->pagarCon($medioUni);
+
+        $tiempo->avanzar(600); //Avanzo 10 minutos
+        
+        $this->assertNotEquals($negra102->pagarCon($medioUni), new Boleto($negra102, $medioUni, "Trasbordo")); //Comprobamos que no se pueden emitir trasbordos en el mismo colectivo
+        
+        $tiempo->avanzar(86400); //Nos movemos al lunes a las 16:50
+
+        //Test lunes a viernes, franja diurna. Limite de tiempo: 60 minutos
+        $negra102->pagarCon($medioUni);
+        
+        $tiempo->avanzar(2400); //Avanzamos 40 minutos
+
+        $this->assertEquals($negra103->pagarCon($medioUni), new Boleto($negra103, $medioUni, "Trasbordo")); //Comprobamos que se emita un trasbordo   
+        
+        $negra102->pagarCon($medioUni);
+
+        $tiempo->avanzar(600);
+
+        $this->assertNotEquals($negra102diferente->pagarCon($medioUni), new Boleto($negra102diferente, $medioUni, "Trasbordo")); //Comprobamos que se puede emitir el trasbordo en un colectivo con la misma linea y bandera que el anterior
+
     }
     
     

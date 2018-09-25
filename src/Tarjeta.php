@@ -60,7 +60,7 @@ class Tarjeta implements TarjetaInterface {
       return $this->saldo;
     }
     
-    public function pagarBoleto(){
+    protected function pagarBoleto(){
 
       if($this->esTrasbordo()){  //Si es trasbordo
 
@@ -116,13 +116,11 @@ class Tarjeta implements TarjetaInterface {
             $this->viajePlus();//dependiendiendo de la cantidad de viajes plus que le queden hace 1 o 2 viajes
             $this->horaPago = $this->tiempo->time();
             return "Plus1";
-            break;
           
           case 1:
             $this->viajePlus();
             $this->horaPago = $this->tiempo->time();
             return "Plus2";
-            break;
 
         }
       }
@@ -130,7 +128,6 @@ class Tarjeta implements TarjetaInterface {
       else{//si no le queda saldo ni plus, no puede pagar
         return FALSE;
       }
-
     }
 
     public function descontarSaldo(ColectivoInterface $colectivo){
@@ -163,7 +160,7 @@ class Tarjeta implements TarjetaInterface {
       return $this->id;
     }
 
-    public function esTrasbordo(){
+    protected function esTrasbordo(){
       $tiempoActual= $this->tiempo->time();
       $hora = date("G", $tiempoActual);
       $dia = date("w", $tiempoActual);
@@ -213,7 +210,7 @@ class Tarjeta implements TarjetaInterface {
     }
 
 
-    public function colectivosDiferentes(){
+    protected function colectivosDiferentes(){
      
       $linea1 = $this->anteriorColectivo->linea();
       $linea2 = $this->actualColectivo->linea();
@@ -229,7 +226,7 @@ class Tarjeta implements TarjetaInterface {
       return FALSE;                  
     }
 
-    public function esFeriado(){
+    protected function esFeriado(){
 
       $fecha = date('d-m',$this->tiempo->time());
 
