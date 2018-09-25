@@ -127,8 +127,7 @@ class Tarjeta implements TarjetaInterface {
 
       else{//si no le queda saldo ni plus, no puede pagar
         return FALSE;
-      }
-    }
+      } }
 
     public function descontarSaldo(ColectivoInterface $colectivo){
       if($this->anteriorColectivo == NULL){ 
