@@ -54,7 +54,8 @@ class Colectivo implements ColectivoInterface {
             case "Plus2":
                 return $boleto = new Boleto($this, $tarjeta, "Ultimo Plus");
 
-            case FALSE:
+            default:
                 return FALSE;
-        } }
+        } 
+    }
 }

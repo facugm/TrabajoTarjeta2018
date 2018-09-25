@@ -102,9 +102,7 @@ class Tarjeta implements TarjetaInterface {
             return "AbonaPlus";
           }
         
-        else{//si no puede pagar el valor del boleto + el de los plus que debe, no puede abonar el pasaje
-          return FALSE;
-        }
+          return FALSE; //si no puede pagar el valor del boleto + el de los plus que debe, no puede abonar el pasaje
 
         }
 
