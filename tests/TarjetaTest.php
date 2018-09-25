@@ -98,5 +98,42 @@ class TarjetaTest extends TestCase {
         $this->assertEquals($boleto->obtenerValor(), 8.4); // se emite el primer medio ya que paso un dia
     }
 
+    public function testTrasbordoNormal(){
+        $tiempo = new TiempoFalso;
+        $tarjeta = new Tarjeta(1, $tiempo);
+        $negra102 = new Colectivo ("102", "Negra", "Semtur", 2);
+        $roja102 = new Colectivo ("102", "Roja", "Semtur", 3);
+        $negra103 = new Colectivo ("103", "Negra", "Semtur", 23);
+        $negra102diferente = new Colectivo ("102", "Negra", "Semtur", 65);
+
+        $tarjeta->recargar(100);
+        $negra102->pagarCon($tarjeta);
+
+        $tiempo->avanzar(4500); //Avanzamos 90 minutos
+
+        //Test horario nocturno, pueden pasar hasta 90 minutos
+        $this->assertEquals($roja102->pagarCon($tarjeta), new Boleto($roja102, $tarjeta, "Trasbordo"));
+        $this->assertEquals($tarjeta->obtenerSaldo(), 77.66);
+        $this->assertNotEquals($roja102->pagarCon($tarjeta), new Boleto($roja102, $tarjeta, "Trasbordo"));
+
+    }
+
+    public function testTrasbrodoMedio(){
+        $tiempo = new TiempoFalso;
+        $medio = new Medio(1, $tiempo);
+                                                                                                                            
+        $negra102 = new Colectivo ("102", "Negra", "Semtur", 2);
+        $roja102 = new Colectivo ("102", "Roja", "Semtur", 3);
+        $negra103 = new Colectivo ("103", "Negra", "Semtur", 23);
+        $negra102diferente = new Colectivo ("102", "Negra", "Semtur", 65);
+        
+        $medio->recargar(50);
+        $negra102->pagarCon($medio);
+
+        $tiempo->avanzar(2400); //avanzamos 40 minutos
+        
+        $this->assertEquals($roja102->pagarCon($medio), new Boleto($roja102, $medio, "Trasbordo"));
+        $this->assertEquals($medio->obtenerSaldo(), 38.83);                                
+    }            
    
 }

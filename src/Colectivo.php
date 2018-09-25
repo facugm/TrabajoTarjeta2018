@@ -26,7 +26,7 @@ class Colectivo implements ColectivoInterface {
     }
 
     //Devuelve empresa del colectivo(string)
-    public function empresa(){
+    public function empresa(){ 
         return $this->empresa;
     }
 
@@ -38,17 +38,14 @@ class Colectivo implements ColectivoInterface {
     //Por ahora solo devuelve el boleto si el saldo es suficiente
     public function pagarCon(TarjetaInterface $tarjeta){
 
-        switch($tarjeta->descontarSaldo()){
+        switch($tarjeta->descontarSaldo($this)){
             case "PagoNormal":
-                $tarjeta->obtenerColectivo($this);
                 return $boleto = new Boleto($this, $tarjeta, "Normal");
             
             case "AbonaPlus":
-                $tarjeta->obtenerColectivo($this);
                 return $boleto = new Boleto($this, $tarjeta, "AbonaPlus");
 
             case "Trasbordo":
-                $tarjeta->obtenerColectivo($this);
                 return $boleto = new Boleto($this, $tarjeta, "Trasbordo");
 
             case "Plus1":

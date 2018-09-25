@@ -11,7 +11,15 @@ class Medio extends Tarjeta implements TarjetaInterface{
       return ($this->pasaje)/2.0;
   }
 
-  public function descontarSaldo(){
+  public function descontarSaldo(ColectivoInterface $colectivo){
+    
+    if($this->anteriorColectivo == NULL){ 
+      $this->anteriorColectivo = $colectivo;
+    }
+    else{
+      $this->anteriorColectivo = $this->actualColectivo;
+    }
+      $this->actualColectivo = $colectivo;
 
     if($this->tiempo->time() == $this->horaPago){ //si la hora actual = la hora del ultimopago significa que es el primer pago que hace la tarjeta
       return $this->pagarBoleto(); //por lo tanto se cobra normalmente el boleto

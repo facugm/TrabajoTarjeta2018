@@ -16,7 +16,17 @@ class MedioUniversitario extends Medio implements TarjetaInterface{
         }
       }
 
-    public function descontarSaldo(){
+    public function descontarSaldo(ColectivoInterface $colectivo){
+
+        if($this->anteriorColectivo == NULL){ 
+            $this->anteriorColectivo = $colectivo;
+          }
+          else{
+            $this->anteriorColectivo = $this->actualColectivo;
+          }
+
+        $this->actualColectivo = $colectivo;
+        
         $hoy = date("d/m/Y", $this->tiempo->time());
         $diaPago = date("d/m/Y", $this->horaPago);
         if($hoy>$diaPago){

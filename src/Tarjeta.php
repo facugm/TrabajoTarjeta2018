@@ -12,12 +12,13 @@ class Tarjeta implements TarjetaInterface {
     protected $id;
     protected $horaPago;
     protected $actualColectivo;
-    protected $anteriorColectivo;
+    protected $anteriorColectivo = NULL;
+    protected $fueTrasbordo = FALSE;
 
     public function __construct($id, TiempoInterface $tiempo){
       $this->id = $id;
+      $this->saldo = 0.0;
       $this->tiempo = $tiempo;
-      $this->anteriorColectivo = NULL;
     }
 
     public function recargar($monto) {
@@ -62,8 +63,10 @@ class Tarjeta implements TarjetaInterface {
     public function pagarBoleto(){
 
       if($this->esTrasbordo()){  //Si es trasbordo
-        $this->saldo -= round($this->valorPasaje() / 0.33); //Se cobra un 33% del valor del pasaje
+
+        $this->saldo -= round($this->valorPasaje() * 0.33,2); //Se cobra un 33% del valor del pasaje
         $this->horaPago = $this->tiempo->time();       //guarda la hora en la que se realizo el pago
+        $this->fueTrasbordo = TRUE;
         return "Trasbordo";
       }
 
@@ -71,6 +74,7 @@ class Tarjeta implements TarjetaInterface {
         if($this->plus == 0){                     //despues se comprueba que no deba ningun plus
           $this->saldo -= $this->valorPasaje();   //si no debe ninguno, se descuenta normalmente el saldo
           $this->horaPago = $this->tiempo->time();  //guarda la hora en la que se realizo el pago
+          $this->fueTrasbordo = FALSE;
           return "PagoNormal";
         }
 
@@ -78,12 +82,14 @@ class Tarjeta implements TarjetaInterface {
           if($this->saldo >= $this->valorPasaje() + $this->valorBoleto){//Le alcanza?
             $this->saldo -= $this->valorPasaje() + $this->abonaPlus();//se resta el valor del pasaje de la tarjeta, la cantidad de plus que deba y se reinicia el contador de plus
             $this->horaPago = $this->tiempo->time();
+            $this->fueTrasbordo = FALSE;
             return "AbonaPlus";
           }  
 
           else{//si no puede pagar el valor del boleto + el del plus que debe, no puede abonar el pasaje
             $this->viajePlus();
             $this->horaPago = $this->tiempo->time();
+            $this->fueTrasbordo = FALSE;
             return "Plus2";
           }
 
@@ -92,6 +98,7 @@ class Tarjeta implements TarjetaInterface {
           if($this->saldo >= $this->valorPasaje() + $this->valorBoleto * 2){
             $this->saldo -= $this->valorPasaje() + $this->abonaPlus(); //aca se resta el valor del pasaje de la tarjeta, la cantidad de plus que deba y se reinicia el contador de plus
             $this->horaPago = $this->tiempo->time();
+            $this->fueTrasbordo = FALSE;
             return "AbonaPlus";
           }
         
@@ -126,7 +133,15 @@ class Tarjeta implements TarjetaInterface {
 
     }
 
-    public function descontarSaldo(){
+    public function descontarSaldo(ColectivoInterface $colectivo){
+      if($this->anteriorColectivo == NULL){ 
+        $this->anteriorColectivo = $colectivo;
+      }
+      else{
+        $this->anteriorColectivo = $this->actualColectivo;
+      }
+        $this->actualColectivo = $colectivo;
+
       return $this->pagarBoleto();
     }
 
@@ -149,49 +164,56 @@ class Tarjeta implements TarjetaInterface {
     }
 
     public function esTrasbordo(){
-      if($this->colectivosDiferentes()){ // si el colectivo en el que se esta usando la tarjeta ahora es diferente al anterior
-        if ((date("w",$this->obtenerFecha()) <= 5 && date("w",$this->obtenerFecha()) >= 1)){ //De lunes a viernes
-          if((date("H", $this->obtenerFecha()) >= 6 && (date("H", $this->obtenerFecha()) <= 22 ))){ //De 6 a 22
-            if($this->tiempo->time() - $this->obtenerFecha() <= 3600){ //Si pasó una hora o menos
-              return TRUE; //Paga trasbordo
-            }
-          }
-        }
+      $tiempoActual= $this->tiempo->time();
+      $hora = date("G", $tiempoActual);
+      $dia = date("w", $tiempoActual);
 
-        if(date("w",$this->obtenerFecha()) == 6 ){ //Si es sábado
-          if(date("H", $this->obtenerFecha()) >= 6 && date("H", $this->obtenerFecha()) <= 14 ) { //De 6 a 14
-            if($this->tiempo->time() - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
-              return TRUE; //Paga trasbordo
-            }
-          } 
-        }
-
-        if(date("w",$this->obtenerFecha()) == 0 ){ //Si es domingo
-          if((date("H", $this->obtenerFecha()) >= 6 && (date("H", $this->obtenerFecha()) <= 22 ))) { //De 6 a 22
-            if($this->tiempo->time() - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
-              return TRUE; //Paga trasbordo
-            }
-          } 
-        }
-      
-        if(date("H", $this->obtenerFecha()) >= 22 && date("H", $this->obtenerFecha()) <= 6 ) { //De 22 a 6
-          if($this->tiempo->time() - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
+      if($this->colectivosDiferentes()){ //Si el colectivo en el que se esta usando la tarjeta ahora es diferente al anterior
+        if($hora >= 22 || $hora < 6 ) { //Todos los dias de 22 a 6
+          if($tiempoActual - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
+            $this->fueTrasbordo = TRUE;
             return TRUE; //Paga trasbordo
           }
         }
 
+        elseif($dia == 6 ){ //Si es sábado
+          if($hora >= 6 && $hora < 14 ) { //De 6 a 14
+            if($tiempoActual - $this->obtenerFecha() <= 3600){ //Si pasaron 60 minutos o menos
+              $this->fueTrasbordo = TRUE;
+              return TRUE; //Paga trasbordo
+            }
+          }
+          else{
+            if($tiempoActual - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
+              $this->fueTrasbordo = TRUE;
+              return TRUE; //Paga trasbordo
+            }
+          }
+        }
+
+        elseif($dia == 0 ){ //Si es domingo
+          if($hora >= 6 && $hora < 22 ) { //De 6 a 22
+            if($tiempoActual - $this->obtenerFecha() <= 5400){ //Si pasaron 90 minutos o menos
+              $this->fueTrasbordo = TRUE;
+              return TRUE; //Paga trasbordo
+            }
+          } 
+        }
+
+        else{ //De lunes a viernes de 6 a 22
+            if($tiempoActual - $this->obtenerFecha() <= 3600){ //Si pasó una hora o menos
+              $this->fueTrasbordo = TRUE;
+              return TRUE; //Paga trasbordo
+            }
+          }
       }
 
       return FALSE;
     }
 
-    public function obtenerColectivo(ColectivoInterface $colectivo){
-      $this->anteriorColectivo = $this->actualColectivo; 
-      $this->actualColectivo = $colectivo; //obtiene el colectivo en el que se esta usando la tarjeta
-    }
 
     public function colectivosDiferentes(){
-      if($this->anteriorColectivo != NULL){
+     
       $linea1 = $this->anteriorColectivo->linea();
       $linea2 = $this->actualColectivo->linea();
 
@@ -201,7 +223,7 @@ class Tarjeta implements TarjetaInterface {
       if($linea1 != $linea2 or $bandera1 != $bandera2){
         return TRUE;        
       }
-    }
+    
 
       return FALSE;                  
     }
