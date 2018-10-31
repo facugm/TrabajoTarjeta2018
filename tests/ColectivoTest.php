@@ -99,16 +99,19 @@ class ColectivoTest extends TestCase {
 
         $tarjeta->recargar(10);  
         $colectivo->pagarCon($tarjeta);  //usamos un viaje plus
+        $this->assertEquals($tarjeta->verPlus(), 1); // Comprobamos que la cantidad de plus sea 1
 
 
         $tarjeta->recargar(30); //comprobamos que se abona un viaje plus que debia y que la descripcion coincide
         $this->assertEquals($colectivo->pagarCon($tarjeta), $abono1 = new Boleto($colectivo, $tarjeta, "AbonaPlus"));
         $this->assertEquals($abono1->obtenerDescripcion(), "Abona Viajes Plus 16.8 y");
+        $this->assertEquals($tarjeta->verPlus(), 0); // Comprobamos que la cantidad de plus se reinicia
         $this->assertEquals($tarjeta->obtenerSaldo(), 6.4);
 
 
         $colectivo->pagarCon($tarjeta); //pagamos dos veces utilizando los viajes plus
         $colectivo->pagarCon($tarjeta);
+        $this->assertEquals($tarjeta->verPlus(), 2); // Comprobamos que la cantidad de plus es 2
 
         $this->assertFalse($colectivo->pagarCon($tarjeta)); //comprobamos que con el mismo saldo no podemos viajar
 

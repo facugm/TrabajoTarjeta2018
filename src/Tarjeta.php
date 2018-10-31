@@ -14,6 +14,7 @@ class Tarjeta implements TarjetaInterface {
     protected $actualColectivo;
     protected $anteriorColectivo = NULL;
     protected $fueTrasbordo = FALSE;
+    protected $plusPPagar;
 
     public function __construct($id, TiempoInterface $tiempo){
       $this->id = $id;
@@ -67,6 +68,7 @@ class Tarjeta implements TarjetaInterface {
         $this->saldo -= round($this->valorPasaje() * 0.33,2); //Se cobra un 33% del valor del pasaje
         $this->horaPago = $this->tiempo->time();       //guarda la hora en la que se realizo el pago
         $this->fueTrasbordo = TRUE;
+        $this->plusPPagar = 0;
         return "Trasbordo";
       }
 
@@ -75,6 +77,7 @@ class Tarjeta implements TarjetaInterface {
           $this->saldo -= $this->valorPasaje();   //si no debe ninguno, se descuenta normalmente el saldo
           $this->horaPago = $this->tiempo->time();  //guarda la hora en la que se realizo el pago
           $this->fueTrasbordo = FALSE;
+          $this->plusPPagar = 0;
           return "PagoNormal";
         }
 
@@ -83,6 +86,7 @@ class Tarjeta implements TarjetaInterface {
             $this->saldo -= $this->valorPasaje() + $this->abonaPlus();//se resta el valor del pasaje de la tarjeta, la cantidad de plus que deba y se reinicia el contador de plus
             $this->horaPago = $this->tiempo->time();
             $this->fueTrasbordo = FALSE;
+            $this->plusPPagar = 1;
             return "AbonaPlus";
           }  
 
@@ -90,6 +94,7 @@ class Tarjeta implements TarjetaInterface {
             $this->viajePlus();
             $this->horaPago = $this->tiempo->time();
             $this->fueTrasbordo = FALSE;
+            $this->plusPPagar = 0;
             return "Plus2";
           }
 
@@ -99,6 +104,7 @@ class Tarjeta implements TarjetaInterface {
             $this->saldo -= $this->valorPasaje() + $this->abonaPlus(); //aca se resta el valor del pasaje de la tarjeta, la cantidad de plus que deba y se reinicia el contador de plus
             $this->horaPago = $this->tiempo->time();
             $this->fueTrasbordo = FALSE;
+            $this->plusPPagar = 2;
             return "AbonaPlus";
           }
         
@@ -142,8 +148,20 @@ class Tarjeta implements TarjetaInterface {
 
     public function abonaPlus(){
       $pagoPlus = $this->valorBoleto * $this->plus;
-      $plus = 0;
+      $this->plus = 0;
       return $pagoPlus;
+    }
+
+    public function valorDelBoleto(){
+      return $this->valorBoleto;
+    }
+
+    public function plusAPagar(){
+      return $this->plusPPagar;  
+    }
+
+    public function verPlus(){
+      return $this->plus;
     }
 
     public function obtenerTipo(){
