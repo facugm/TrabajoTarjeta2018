@@ -9,7 +9,7 @@ class Colectivo implements ColectivoInterface {
     protected $numero;
     protected $bandera;
 
-    public function __construct($linea, $bandera, $empresa, $numero){
+    public function __construct($linea, $bandera, $empresa, $numero) {
         $this->linea = $linea;
         $this->bandera = $bandera;
         $this->empresa = $empresa;
@@ -17,28 +17,28 @@ class Colectivo implements ColectivoInterface {
     }
 
     //Devuelve linea del colectivo(string)
-    public function linea(){
+    public function linea() {
         return $this->linea;
     }
 
-    public function bandera(){
+    public function bandera() {
         return $this->bandera;
     }
 
     //Devuelve empresa del colectivo(string)
-    public function empresa(){ 
+    public function empresa() { 
         return $this->empresa;
     }
 
     //Devuelve numero del colectivo(int)
-    public function numero(){
+    public function numero() {
         return $this->numero;
     }
 
     //Por ahora solo devuelve el boleto si el saldo es suficiente
-    public function pagarCon(TarjetaInterface $tarjeta){
+    public function pagarCon(TarjetaInterface $tarjeta) {
 
-        switch($tarjeta->descontarSaldo($this)){
+        switch ($tarjeta->descontarSaldo($this)) {
             case "PagoNormal":
                 return new Boleto($this, $tarjeta, "Normal");
             
