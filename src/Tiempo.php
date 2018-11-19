@@ -2,11 +2,11 @@
 
 namespace TrabajoTarjeta;
 
-class Tiempo implements TiempoInterface{
+class Tiempo implements TiempoInterface {
 
     protected $feriado;
 
-    public function __construct($fer=FALSE) {
+    public function __construct($fer = FALSE) {
         $this->feriado = $fer; 
     }
     /**
@@ -14,7 +14,7 @@ class Tiempo implements TiempoInterface{
      * 
      * @return int
      */
-    public function time(){
+    public function time() {
         return time();
     }
     
@@ -24,18 +24,17 @@ class Tiempo implements TiempoInterface{
      * @return bool
      *     TRUE si es feriado, FALSE en caso contrario
      */
-    public function esFeriado(){
+    public function esFeriado() {
         return $this->feriado;
     }
 
     /**
      * Cambia el valor del campo 'feriado'
      */
-    public function cambiarFeriado(){
+    public function cambiarFeriado() {
         if ($this->feriado == FALSE) {
             $this->feriado = TRUE;
-        }
-        else {
+        } else {
             $this->feriado = FALSE;
         }
     }

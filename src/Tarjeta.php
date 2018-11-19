@@ -39,9 +39,7 @@ class Tarjeta implements TarjetaInterface {
       //Comprueba si la carga va a obtener un adicional y se lo suma
       if ($monto == 510.15) {
         $monto += 81.93;
-      }
-      
-      elseif ($monto == 962.59) {
+      } elseif ($monto == 962.59) {
         $monto += 221.58;
       }
       
@@ -103,18 +101,14 @@ class Tarjeta implements TarjetaInterface {
           $this->fueTrasbordo = FALSE;
           $this->plusPPagar = 0;
           return "PagoNormal";
-        }
-
-        elseif ($this->plus == 1) {//si debe uno se descuenta el valor del boleto + el valor del plus que debe
+        } elseif ($this->plus == 1) {//si debe uno se descuenta el valor del boleto + el valor del plus que debe
           if ($this->saldo >= $this->valorPasaje() + $this->valorBoleto) {//Le alcanza?
             $this->saldo -= $this->valorPasaje() + $this->abonaPlus(); //se resta el valor del pasaje de la tarjeta, la cantidad de plus que deba y se reinicia el contador de plus
             $this->horaPago = $this->tiempo->time();
             $this->fueTrasbordo = FALSE;
             $this->plusPPagar = 1;
             return "AbonaPlus";
-          }  
-
-          else {//si no puede pagar el valor del boleto + el del plus que debe, no puede abonar el pasaje
+          } else {//si no puede pagar el valor del boleto + el del plus que debe, no puede abonar el pasaje
             $this->viajePlus();
             $this->horaPago = $this->tiempo->time();
             $this->fueTrasbordo = FALSE;
@@ -122,25 +116,20 @@ class Tarjeta implements TarjetaInterface {
             return "Plus2";
           }
 
-        }
-        elseif ($this->plus == 2) {//si debe dos se descuenta el valor del boleto + el valor de los plus que debe
+        } elseif ($this->plus == 2) {//si debe dos se descuenta el valor del boleto + el valor de los plus que debe
           if ($this->saldo >= $this->valorPasaje() + $this->valorBoleto * 2) {
             $this->saldo -= $this->valorPasaje() + $this->abonaPlus(); //aca se resta el valor del pasaje de la tarjeta, la cantidad de plus que deba y se reinicia el contador de plus
             $this->horaPago = $this->tiempo->time();
             $this->fueTrasbordo = FALSE;
             $this->plusPPagar = 2;
             return "AbonaPlus";
-          }
-        
-        else {//si no puede pagar el valor del boleto + el de los plus que debe, no puede abonar el pasaje
+          } else {//si no puede pagar el valor del boleto + el de los plus que debe, no puede abonar el pasaje
           return FALSE;
         }
 
         }
 
-      }
-
-      elseif ($this->plus < 2) {//si no tiene saldo suficiente se verifica si le quedan plus disponibles
+      } elseif ($this->plus < 2) {//si no tiene saldo suficiente se verifica si le quedan plus disponibles
         switch ($this->plus) {
           case 0:
             $this->viajePlus(); //dependiendiendo de la cantidad de viajes plus que le queden hace 1 o 2 viajes
@@ -171,8 +160,7 @@ class Tarjeta implements TarjetaInterface {
     public function descontarSaldo(ColectivoInterface $colectivo) {
       if ($this->anteriorColectivo == NULL) { 
         $this->anteriorColectivo = $colectivo;
-      }
-      else {
+      } else {
         $this->anteriorColectivo = $this->actualColectivo;
       }
         $this->actualColectivo = $colectivo;
@@ -272,33 +260,26 @@ class Tarjeta implements TarjetaInterface {
             $this->fueTrasbordo = TRUE;
             return TRUE; //Paga trasbordo
           }
-        }
-
-        elseif ($dia == 6) { //Si es sábado
+        } elseif ($dia == 6) { //Si es sábado
           if ($hora >= 6 && $hora < 14) { //De 6 a 14
             if ($tiempoActual - $this->obtenerFecha() <= 3600) { //Si pasaron 60 minutos o menos
               $this->fueTrasbordo = TRUE;
               return TRUE; //Paga trasbordo
             }
-          }
-          else {
+          } else {
             if ($tiempoActual - $this->obtenerFecha() <= 5400) { //Si pasaron 90 minutos o menos
               $this->fueTrasbordo = TRUE;
               return TRUE; //Paga trasbordo
             }
           }
-        }
-
-        elseif ($dia == 0 || $this->eFeriado()) { //Si es domingo o feriado
+        } elseif ($dia == 0 || $this->eFeriado()) { //Si es domingo o feriado
           if ($hora >= 6 && $hora < 22) { //De 6 a 22
             if ($tiempoActual - $this->obtenerFecha() <= 5400) { //Si pasaron 90 minutos o menos
               $this->fueTrasbordo = TRUE;
               return TRUE; //Paga trasbordo
             }
           } 
-        }
-
-        else { //De lunes a viernes de 6 a 22
+        } else { //De lunes a viernes de 6 a 22
             if ($tiempoActual - $this->obtenerFecha() <= 3600) { //Si pasó una hora o menos
               $this->fueTrasbordo = TRUE;
               return TRUE; //Paga trasbordo

@@ -2,7 +2,7 @@
 
 namespace TrabajoTarjeta;
 
-class MedioUniversitario extends Medio implements TarjetaInterface{
+class MedioUniversitario extends Medio implements TarjetaInterface {
 
     protected $tipo = "Medio Universitario";
     private $mediosUsados = 0;
@@ -11,12 +11,11 @@ class MedioUniversitario extends Medio implements TarjetaInterface{
      * 
      * @return float
      *    Valor del pasaje
-    */
+     */
     public function valorPasaje(){
         if($this->mediosUsados<=2){
             return ($this->pasaje)/2.0;
-        }
-        else{
+        } else{
             return $this->pasaje;
         }
       }
@@ -29,13 +28,12 @@ class MedioUniversitario extends Medio implements TarjetaInterface{
      * 
      * @return string|bool
      *    El tipo de pago o FALSE si el saldo es insuficiente
-    */
+     */
     public function descontarSaldo(ColectivoInterface $colectivo){
 
         if($this->anteriorColectivo == NULL){ 
             $this->anteriorColectivo = $colectivo;
-          }
-          else{
+          } else{
             $this->anteriorColectivo = $this->actualColectivo;
           }
 
@@ -49,8 +47,7 @@ class MedioUniversitario extends Medio implements TarjetaInterface{
         if($this->mediosUsados <= 2){
             $this->mediosUsados+= 1;
             return $this->pagarBoleto();
-        }
-        else{
+        } else{
             return $this->pagarBoleto();
         }
         

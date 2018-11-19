@@ -2,7 +2,7 @@
 
 namespace TrabajoTarjeta;
 
-class Completo extends Tarjeta implements TarjetaInterface{
+class Completo extends Tarjeta implements TarjetaInterface {
 
     /**
      * Redefinimos el valor y tipo del pasaje de la clase. 
