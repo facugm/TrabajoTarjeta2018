@@ -7,7 +7,7 @@ interface TiempoInterface{
     /**
      * Devuelve el tiempo actual
      * 
-     * @return TiempoInterface
+     * @return int
      *     Tiempo actual
      */
     public function time();

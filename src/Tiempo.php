@@ -12,7 +12,7 @@ class Tiempo implements TiempoInterface{
     /**
      * Devuelve el tiempo actual
      * 
-     * @return TiempoInterface
+     * @return int
      */
     public function time(){
         return time();
