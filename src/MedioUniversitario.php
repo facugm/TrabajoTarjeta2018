@@ -12,10 +12,10 @@ class MedioUniversitario extends Medio implements TarjetaInterface {
      * @return float
      *    Valor del pasaje
      */
-    public function valorPasaje(){
-        if($this->mediosUsados<=2){
-            return ($this->pasaje)/2.0;
-        } else{
+    public function valorPasaje() {
+        if ($this->mediosUsados <= 2) {
+            return ($this->pasaje) / 2.0;
+        } else {
             return $this->pasaje;
         }
       }
@@ -29,11 +29,11 @@ class MedioUniversitario extends Medio implements TarjetaInterface {
      * @return string|bool
      *    El tipo de pago o FALSE si el saldo es insuficiente
      */
-    public function descontarSaldo(ColectivoInterface $colectivo){
+    public function descontarSaldo(ColectivoInterface $colectivo) {
 
-        if($this->anteriorColectivo == NULL){ 
+        if ($this->anteriorColectivo == NULL) { 
             $this->anteriorColectivo = $colectivo;
-          } else{
+          } else {
             $this->anteriorColectivo = $this->actualColectivo;
           }
 
@@ -41,13 +41,13 @@ class MedioUniversitario extends Medio implements TarjetaInterface {
         
         $hoy = date("d/m/Y", $this->tiempo->time());
         $diaPago = date("d/m/Y", $this->horaPago);
-        if($hoy>$diaPago){
+        if ($hoy > $diaPago) {
           $this->mediosUsados = 0;
         }
-        if($this->mediosUsados <= 2){
-            $this->mediosUsados+= 1;
+        if ($this->mediosUsados <= 2) {
+            $this->mediosUsados += 1;
             return $this->pagarBoleto();
-        } else{
+        } else {
             return $this->pagarBoleto();
         }
         
