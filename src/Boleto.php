@@ -18,7 +18,7 @@ class Boleto implements BoletoInterface {
 
     public function __construct($colectivo, $tarjeta, $tipoBoleto) {
 
-        switch($tipoBoleto){
+        switch ($tipoBoleto) {
             case "Normal":
                 $this->valor = $tarjeta->valorPasaje();
                 break;
@@ -32,7 +32,7 @@ class Boleto implements BoletoInterface {
                 break;                
             
             default:
-                $this->valor= 0.0;                                                                            
+                $this->valor = 0.0;                                                                            
         }
 
         $this->colectivo = $colectivo;
@@ -41,7 +41,7 @@ class Boleto implements BoletoInterface {
 
         $this->tipo = $tarjeta->obtenerTipo();
 
-        $this->fecha = date("d/m/Y H:i:s",$tarjeta->obtenerFecha());
+        $this->fecha = date("d/m/Y H:i:s", $tarjeta->obtenerFecha());
 
         $this->linea = $colectivo->linea();
 
@@ -83,8 +83,8 @@ class Boleto implements BoletoInterface {
      * 
      * @return string|NULL
      */
-    public function obtenerDescripcion(){
-        if($this->tipoBoleto == "AbonaPlus"){
+    public function obtenerDescripcion() {
+        if ($this->tipoBoleto == "AbonaPlus") {
             $base = "Abona Viajes Plus ";
             $extraPlus = $this->total - $this->valor;
             $final = $base . $extraPlus . " y";
