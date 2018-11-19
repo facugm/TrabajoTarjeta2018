@@ -325,7 +325,7 @@ class Tarjeta implements TarjetaInterface {
       $bandera1 = $this->anteriorColectivo->bandera();
       $bandera2 = $this->actualColectivo->bandera();
     
-      if ($linea1 != $linea2 or $bandera1 != $bandera2) {
+      if ($linea1 != $linea2 || $bandera1 != $bandera2) {
         return TRUE;        
       }
     

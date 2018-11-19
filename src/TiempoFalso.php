@@ -24,7 +24,7 @@ class  TiempoFalso implements TiempoInterface{
     /**
      * Devuelve el tiempo falso
      * 
-     * @return int
+     * @return TiempoInterface
      *     Tiempo falso
      */
     public function time(){
