@@ -6,11 +6,25 @@ class Medio extends Tarjeta implements TarjetaInterface{
 
   protected $tipo = "Medio";
 
-    //redefinimos el valor del pasaje de la clase
+    /** Redefinimos el valor del pasaje de la clase a la mitad. Ejemplo: 6.70
+     * 
+     * @return float
+     *    Valor del pasaje
+    */
     public function valorPasaje(){
       return ($this->pasaje)/2.0;
   }
 
+
+  /**
+   * Redefinimos la funcion para que, además de descontar el boleto de la tarjeta, se fije que el último viaje haya
+   * sido emitido al menos 5 minutos más tarde que el anterior. Ejemplo: "Medio"
+   * 
+   * @param ColectivoInterface $colectivo
+   * 
+   * @return string|bool
+   *    El tipo de pago o FALSE si el saldo es insuficiente
+   */
   public function descontarSaldo(ColectivoInterface $colectivo){
     
     if($this->anteriorColectivo == NULL){ 

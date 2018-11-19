@@ -5,16 +5,26 @@ namespace TrabajoTarjeta;
 interface ColectivoInterface {
 
     /**
-     * Devuelve el nombre de la linea. Ejemplo '142 Negro'
+     * Devuelve el nombre de la linea. Ejemplo "142"
      *
      * @return string
+     *     Nombre de la linea
      */
     public function linea();
 
     /**
-     * Devuelve el nombre de la empresa. Ejemplo 'Semtur'
+     * Devuelve la bandera de la unidad. Ejemplo: "Negra"
      *
      * @return string
+     *     Bandera de la unidad
+     */
+    public function bandera();
+
+    /**
+     * Devuelve el nombre de la empresa. Ejemplo "Semtur"
+     *
+     * @return string
+     *     Nombre de la empresa
      */
     public function empresa();
 
@@ -22,6 +32,7 @@ interface ColectivoInterface {
      * Devuelve el numero de unidad. Ejemplo: 12
      *
      * @return int
+     *     Numero de unidad
      */
     public function numero();
 

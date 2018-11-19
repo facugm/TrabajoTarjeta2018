@@ -53,7 +53,10 @@ class TarjetaTest extends TestCase {
         $this->assertEquals($tarjeta->obtenerSaldo(), 0);
   }
 
-    public function testLimiteTiempoMedio(){ //Comprueba que se puedan emitir dos medios recién al haber pasado 5 minutos
+    /**
+     * Comprueba que se puedan emitir dos medios recién al haber pasado 5 minutos 
+     */
+    public function testLimiteTiempoMedio(){
         $tiempo = new TiempoFalso;
         $medio = new Medio(1, $tiempo);
         $colectivo = new Colectivo("102", "Negra", "Semtur", 2);
@@ -70,6 +73,9 @@ class TarjetaTest extends TestCase {
         $this->assertEquals($colectivo->pagarCon($medio), new Boleto($colectivo, $medio, "Normal")); //se emite un medio normal sin problemas
   }
 
+    /**
+     * Comprueba que se puedan emitir dos medios universitarios por día 
+     */
     public function testLimiteMedioUni(){
         $tiempo = new TiempoFalso;
         $uni = new MedioUniversitario(1, $tiempo);
@@ -98,6 +104,9 @@ class TarjetaTest extends TestCase {
         $this->assertEquals($boleto->obtenerValor(), 8.4); // se emite el primer medio ya que paso un dia
     }
 
+    /**
+     * Comprueba el funcionamiento del trasbordo en todos los casos posibles, con una tarjeta de tipo "Normal" 
+     */
     public function testTrasbordoNormal(){
         $tiempo = new TiempoFalso;
         $tarjeta = new Tarjeta(1, $tiempo);
@@ -119,13 +128,14 @@ class TarjetaTest extends TestCase {
         
         $tiempo->avanzar(16200); //Avanzamos hasta las 6 de la mañana
         
-        //Test feriado (Año nuevo), límite de tiempo: 90 minutos
+        //Test feriado, límite de tiempo: 90 minutos
         $negra102->pagarCon($tarjeta);
         
         $tiempo->avanzar(5400); //Avanzamos hora y media
 
-
+        $tarjeta->cFeriado();
         $this->assertEquals($negra103->pagarCon($tarjeta), new Boleto($negra103, $tarjeta, "Trasbordo")); //Comprobamos que se emita un trasbordo
+        $tarjeta->cFeriado();
         $this->assertEquals($tarjeta->obtenerSaldo(), 38.52);
         $this->assertNotEquals($negra103->pagarCon($tarjeta), new Boleto($negra103, $tarjeta, "Trasbordo")); //Comprobamos que se emita un boleto normal
 
@@ -178,6 +188,9 @@ class TarjetaTest extends TestCase {
 
     }
 
+    /**
+     * Comprueba el funcionamiento del trasbordo en todos los casos posibles, con una tarjeta de tipo "Medio" 
+     */
     public function testTrasbordoMedio(){
         $tiempo = new TiempoFalso;
         $medio = new Medio(1, $tiempo);
@@ -199,13 +212,14 @@ class TarjetaTest extends TestCase {
         
         $tiempo->avanzar(16200); //Avanzamos hasta las 6 de la mañana
         
-        //Test feriado (Año nuevo), límite de tiempo: 90 minutos
+        //Test feriado, límite de tiempo: 90 minutos
         $negra102->pagarCon($medio);
         
         $tiempo->avanzar(5400); //Avanzamos hora y media
 
-
+        $medio->cFeriado();
         $this->assertEquals($negra103->pagarCon($medio), new Boleto($negra103, $medio, "Trasbordo")); //Comprobamos que se emita un trasbordo
+        $medio->cFeriado();
         $this->assertEquals($medio->obtenerSaldo(), 69.26);
         $this->assertNotEquals($negra103->pagarCon($medio), new Boleto($negra103, $medio, "Trasbordo")); //Comprobamos que se emita un boleto normal
 
@@ -258,6 +272,9 @@ class TarjetaTest extends TestCase {
 
     }
 
+    /**
+     * Comprueba el funcionamiento del trasbordo en todos los casos posibles, con una tarjeta de tipo "Medio Universitario" 
+     */
     public function testTrasbordoMedioUni(){
         $tiempo = new TiempoFalso;
         $medioUni = new MedioUniversitario(1, $tiempo);
@@ -279,13 +296,14 @@ class TarjetaTest extends TestCase {
         
         $tiempo->avanzar(16200); //Avanzamos hasta las 6 de la mañana
         
-        //Test feriado (Año nuevo), límite de tiempo: 90 minutos
+        //Test feriado, límite de tiempo: 90 minutos
         $negra102->pagarCon($medioUni);
         
         $tiempo->avanzar(5400); //Avanzamos hora y media
 
-
+        $medioUni->cFeriado();
         $this->assertEquals($negra103->pagarCon($medioUni), new Boleto($negra103, $medioUni, "Trasbordo")); //Comprobamos que se emita un trasbordo
+        $medioUni->cFeriado();
         $this->assertEquals($medioUni->obtenerSaldo(), 49.69);
         $this->assertNotEquals($negra103->pagarCon($medioUni), new Boleto($negra103, $medioUni, "Trasbordo")); //Comprobamos que se emita un boleto normal
 

@@ -6,6 +6,10 @@ use PHPUnit\Framework\TestCase;
 
 class ColectivoTest extends TestCase {
 
+
+    /**
+     * Comprueba que no se pueda pagar un boleto sin el saldo suficiente 
+     */
     public function testPagarSaldoInsuf() {
         $colectivo = new Colectivo("102", "Negra", "Semtur", 420);
 
@@ -21,6 +25,9 @@ class ColectivoTest extends TestCase {
         $this->assertFalse($colectivo->pagarCon($tarjeta));
     }
 
+    /**
+     * Comprueba que se pueda abonar un viaje si el saldo es suficiente
+     */
     public function testPagarSaldoSuf(){
         $colectivo = new Colectivo("102", "Negra", "Semtur", "420") ;
 	
@@ -29,11 +36,14 @@ class ColectivoTest extends TestCase {
 
         $tarjeta->recargar(20);
         
-        //testeamos si al pagar con la tarjeta con saldo suficiente se emite un boleto correcto
+        //Testeamos si al pagar con la tarjeta con saldo suficiente se emite un boleto correcto
         $this->assertEquals($colectivo->pagarCon($tarjeta), new Boleto($colectivo, $tarjeta, "Normal"));
         $this->assertEquals($tarjeta->obtenerSaldo(),3.2);
     }
 
+    /**
+     * Comprueba que se emitan correctamente los viajes plus
+     */
     public function testViajesPlus() {
         $colectivo = new Colectivo("102", NULL, NULL, NULL);
 
@@ -54,6 +64,9 @@ class ColectivoTest extends TestCase {
 
     }
 
+    /**
+     * Comprueba el funcionamiento de las franquicias en todos los casos de emisión de boletos posibles
+     */
     public function testFranquicias(){
         $colectivo = new Colectivo("102", NULL, NULL, NULL);
 
@@ -84,6 +97,9 @@ class ColectivoTest extends TestCase {
         $this->assertEquals($colectivo->pagarCon($medioUni), new Boleto($colectivo, $medioUni, "Ultimo Plus"));
     }
 
+    /**
+     * Comprueba que se obtengan correctamente los datos de un colectivo
+     */
     public function testDatosColectivo(){
         $colectivo = new Colectivo("102", "Negra", "Semtur", 2); 
 
@@ -92,6 +108,10 @@ class ColectivoTest extends TestCase {
         $this->assertEquals($colectivo->numero(), 2);
     }
 
+    /**
+     * Comprueba que las deudas de los viajes plus se abonen correctamente o no en función al saldo de la tarjeta,
+     * con una tarjeta de tipo "Normal"
+     */
     public function testDebePlusNormal(){
         $tiempo = new Tiempo;
         $tarjeta = new Tarjeta(1, $tiempo);
@@ -125,6 +145,10 @@ class ColectivoTest extends TestCase {
 
     }
 
+    /**
+     * Comprueba que las deudas de los viajes plus se abonen correctamente o no en función al saldo de la tarjeta,
+     * con una tarjeta de tipo "Medio"
+     */
     public function testDebePlusMedio(){
         $tiempo = new Tiempo;
         $medio = new Medio(1, $tiempo);

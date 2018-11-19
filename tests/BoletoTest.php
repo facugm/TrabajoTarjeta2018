@@ -6,7 +6,10 @@ use PHPUnit\Framework\TestCase;
 
 class BoletoTest extends TestCase {
 
-    public function testSaldoCero() {
+    /**
+     * Comprueba que el boleto se genere correctamente con el valor de pasaje correspondiente 
+     */
+    public function testGenerarBoleto() {
         $valor = 16.80;
 	
 	    $tiempo = new Tiempo;
@@ -20,6 +23,9 @@ class BoletoTest extends TestCase {
         $this->assertEquals($boleto->obtenerValor(), $valor);
     }
 
+    /**
+     * Comprueba que el boleto se genere correctamente con el colectivo en el que se abonó
+     */
     public function testObtenerColectivo() {
         $linea = "102";
         $empresa = "Semtur";

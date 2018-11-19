@@ -58,17 +58,31 @@ class Boleto implements BoletoInterface {
     }
 
     
-    //Devuelve el valor del boleto
+    /**
+     * Devuelve el valor del boleto.
+     *
+     * @return int
+     *     Valor del boleto
+     */
     public function obtenerValor() {
         return $this->valor;
     }
 
-    //Devuelve un objeto que respresenta el colectivo donde se viajó
+    /**
+     * Devuelve un objeto que respresenta el colectivo donde se viajó.
+     *
+     * @return ColectivoInterface
+     *     Colectivo donde se viajó
+     */
     public function obtenerColectivo() {
         return $this->colectivo;
     }
 
-    //Devuelve los datos del boleto emitido
+    /**
+     * Devuelve los datos del boleto emitido si es 
+     * 
+     * @return string|NULL
+     */
     public function obtenerDescripcion(){
         if($this->tipoBoleto == "AbonaPlus"){
             $base = "Abona Viajes Plus ";

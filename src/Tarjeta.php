@@ -15,13 +15,23 @@ class Tarjeta implements TarjetaInterface {
     protected $anteriorColectivo = NULL;
     protected $fueTrasbordo = FALSE;
     protected $plusPPagar;
+    protected $tiempo;
 
     public function __construct($id, TiempoInterface $tiempo) {
       $this->id = $id;
       $this->saldo = 0.0;
       $this->tiempo = $tiempo;
     }
-
+    /**
+     * Recarga una tarjeta con un cierto valor de dinero.
+     * 
+     * @param int $monto
+     *    Cantidad de dinero a recargar
+     * 
+     * @return bool
+     *    TRUE si el monto a cargar es válido, o FALSE en caso de que no lo sea
+     *     
+     */
     public function recargar($monto) {
       // Esto comprueba si la carga esta dentro de los montos permitidos
       $cargavalida = in_array($monto, $this->cargas);
@@ -42,26 +52,40 @@ class Tarjeta implements TarjetaInterface {
       return $cargavalida;
     }
 
-    //Devuelve el valor de un pasaje
+    /**
+     * Devuelve el valor de un pasaje. Ejemplo: 16.8
+     *
+     * @return float
+     *    Valor de pasaje
+     */
     public function valorPasaje() {
       return $this->pasaje;
     }
 
-    //Suma 1 a la cantidad de viajes plus hechos
+    /** 
+     * Suma 1 a la cantidad de viajes plus hechos
+     */
     public function viajePlus() {
       $this->plus += 1;
     }
 
     /**
-     * Devuelve el saldo que le queda a la tarjeta.
+     * Devuelve el saldo que le queda a la tarjeta. Ejemplo: 37.9
      *
      * @return float
+     *    Saldo
      */
     public function obtenerSaldo() {
       return $this->saldo;
     }
     
-    protected function pagarBoleto() { //En esta funcion se descuenta el saldo y retorna el tipo de pago que luego determina el tipo de boleto a emitir
+    /**
+     * Descuenta el saldo. Ejemplo: 'PagoNormal'
+     * 
+     * @return string|bool
+     *    El tipo de pago o FALSE si el saldo es insuficiente
+     */
+    protected function pagarBoleto() {
 
       if ($this->esTrasbordo()) {  //Si es trasbordo
 
@@ -134,6 +158,16 @@ class Tarjeta implements TarjetaInterface {
         return FALSE; //si no le queda saldo ni plus, no puede pagar
     }
 
+
+    /**
+     * Descuenta el boleto del saldo de la tarjeta. Ejemplo: 'AbonaPlus'
+     * 
+     * @param ColectivoInterface $colectivo
+     *    Colectivo anterior
+     * 
+     * @return string|bool
+     *    El tipo de pago o FALSE si el saldo es insuficiente
+     */
     public function descontarSaldo(ColectivoInterface $colectivo) {
       if ($this->anteriorColectivo == NULL) { 
         $this->anteriorColectivo = $colectivo;
@@ -146,36 +180,86 @@ class Tarjeta implements TarjetaInterface {
       return $this->pagarBoleto();
     }
 
+
+    /**
+     * Se abonan los viajes plus en función a los que tiene la tarjeta. Ejemplo: 33.6
+     * 
+     * @return float
+     *    Valor total de viajes plus a pagar
+     */
     public function abonaPlus() {
       $pagoPlus = $this->valorBoleto * $this->plus;
       $this->plus = 0;
       return $pagoPlus;
     }
 
+    /**
+     * Devuelve el valor del boleto. Ejemplo: 18.45
+     * 
+     * @return float
+     *    Valor del boleto
+     */
     public function valorDelBoleto() {
       return $this->valorBoleto;
     }
 
+    /**
+     * Devuelve la cantidad de viajes plus que se van a pagar en un viaje. Ejemplo: 1
+     * 
+     * @return int
+     *    Cantidad de plus a abonar
+     */
     public function plusAPagar() {
       return $this->plusPPagar;  
     }
 
+    /**
+     * Devuelve la cantidad de viajes plus que tiene la tarjeta. Ejemplo: 2
+     * 
+     * @return int
+     *    Cantidad de plus en tarjeta
+     */
     public function verPlus() {
       return $this->plus;
     }
 
+    /**
+     * Devuelve el tipo de la tarjeta que se está usando. Ejemplo: "Normal" 
+     * 
+     * @return string
+     *    Tipo de tarjeta
+     */
     public function obtenerTipo() {
       return $this->tipo;
     }
 
+    /**
+     * Devuelve la hora en la que se abonó un pasaje. Ejemplo: 543
+     * 
+     * @return int
+     *    Hora en la que se efectuó el pago del boleto
+     */
     public function obtenerFecha() {
       return $this->horaPago;
     }
 
+    /**
+     * Retorna el id único de la tarjeta. Ejemplo: 3
+     * 
+     * @return int
+     *    Número de ID de la tarjeta
+     */
     public function obtenerId() {
       return $this->id;
     }
 
+    /**
+     * Chequea que el viaje que se quiere abonar cumpla las condiciones necesarias para
+     * que sea trasbordo
+     * 
+     * @return bool
+     *    TRUE o FALSE dependiendo de si es trasbordo o no
+     */
     protected function esTrasbordo() {
       $tiempoActual = $this->tiempo->time();
       $hora = date("G", $tiempoActual);
@@ -205,7 +289,7 @@ class Tarjeta implements TarjetaInterface {
           }
         }
 
-        elseif ($dia == 0 || $this->esFeriado()) { //Si es domingo o feriado
+        elseif ($dia == 0 || $this->eFeriado()) { //Si es domingo o feriado
           if ($hora >= 6 && $hora < 22) { //De 6 a 22
             if ($tiempoActual - $this->obtenerFecha() <= 5400) { //Si pasaron 90 minutos o menos
               $this->fueTrasbordo = TRUE;
@@ -226,6 +310,13 @@ class Tarjeta implements TarjetaInterface {
     }
 
 
+    /**
+     * Se fija si el colectivo en donde se está pagando es distinto al
+     * del viaje anterior. Se comparan líneas y banderas
+     * 
+     * @return bool
+     *    TRUE o FALSE dependiendo de si son iguales o no
+     */
     protected function colectivosDiferentes() {
      
       $linea1 = $this->anteriorColectivo->linea();
@@ -242,26 +333,20 @@ class Tarjeta implements TarjetaInterface {
       return FALSE;                  
     }
 
-    protected function esFeriado() {
+    /**
+     * Llama a una función del tiempo que hace al día feriado o no, dependiendo su valor anterior
+     */
+    public function cFeriado() {
+      $this->tiempo->cambiarFeriado();
+    }
 
-      $fecha = date('d-m', $this->tiempo->time());
-
-      $feriados = array( 
-            '01-01', //  Año Nuevo
-            '24-03', //  Día Nacional de la Memoria por la Verdad y la Justicia.
-            '02-04', //  Día del Veterano y de los Caídos en la Guerra de Malvinas.
-            '01-05', //  Día del trabajador.
-            '25-05', //  Día de la Revolución de Mayo. 
-            '17-06', //  Día Paso a la Inmortalidad del General Martín Miguel de Güemes.
-            '20-06', //  Día Paso a la Inmortalidad del General Manuel Belgrano. F
-            '09-07', //  Día de la Independencia.
-            '17-08', //  Paso a la Inmortalidad del Gral. José de San Martín
-            '12-10', //  Día del Respeto a la Diversidad Cultural 
-            '20-11', //  Día de la Soberanía Nacional
-            '08-12', //  Inmaculada Concepción de María
-            '25-12', //  Navidad
-            );
-
-      return in_array($fecha, $feriados); //Si la fecha está en el array, es feriado
+    /**
+     * Llama a una función del tiempo que indica si un día es feriado o no
+     * 
+     * @return bool
+     *    TRUE si el día es feriado o FALSE si no lo es
+     */
+    public function eFeriado() {
+      return $this->tiempo->esFeriado();
     }
   }

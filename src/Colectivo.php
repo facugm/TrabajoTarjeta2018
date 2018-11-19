@@ -16,26 +16,55 @@ class Colectivo implements ColectivoInterface {
         $this->numero = $numero;
     }
 
-    //Devuelve linea del colectivo(string)
+    /**
+     * Devuelve el nombre de la linea. Ejemplo "142"
+     *
+     * @return string
+     *     Nombre de la linea
+     */
     public function linea() {
         return $this->linea;
     }
-
+    
+    /**
+     * Devuelve la bandera de la unidad. Ejemplo: "Negra"
+     *
+     * @return string
+     *     Bandera de la unidad
+     */
     public function bandera() {
         return $this->bandera;
     }
 
-    //Devuelve empresa del colectivo(string)
+    /**
+     * Devuelve el nombre de la empresa. Ejemplo "Semtur"
+     *
+     * @return string
+     *     Nombre de la empresa
+     */
     public function empresa() { 
         return $this->empresa;
     }
 
-    //Devuelve numero del colectivo(int)
+    /**
+     * Devuelve el numero de unidad. Ejemplo: 12
+     *
+     * @return int
+     *     Numero de unidad
+     */
     public function numero() {
         return $this->numero;
     }
 
-    //Por ahora solo devuelve el boleto si el saldo es suficiente
+    /**
+     * Paga un viaje en el colectivo con una tarjeta en particular
+     *
+     * @param TarjetaInterface $tarjeta
+     *
+     * @return BoletoInterface|FALSE
+     *  El boleto generado por el pago del viaje o FALSE si no hay saldo
+     *  suficiente en la tarjeta.
+     */
     public function pagarCon(TarjetaInterface $tarjeta) {
 
         switch ($tarjeta->descontarSaldo($this)) {
