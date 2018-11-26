@@ -36,7 +36,7 @@ class ColectivoTest extends TestCase {
 
         $tarjeta->recargar(20);
         
-        //Testeamos si al pagar con la tarjeta con saldo suficiente se emite un boleto correcto
+        //Testeamos que al pagar con la tarjeta con saldo suficiente se emite un boleto correcto
         $this->assertEquals($colectivo->pagarCon($tarjeta), new Boleto($colectivo, $tarjeta, "Normal"));
         $this->assertEquals($tarjeta->obtenerSaldo(),3.2);
     }
